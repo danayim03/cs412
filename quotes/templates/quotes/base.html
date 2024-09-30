@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Steve Jobs Quote of the Day{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Steve Jobs Quote of the Day</h1>
+    </header>
+
+    <!-- Navigation Section -->
+    <nav>
+        <ul>
+            <li><a href="{% url 'main_page' %}">Home</a></li>
+            <li><a href="{% url 'random_quote' %}">Random Quote</a></li>
+            <li><a href="{% url 'show_all' %}">Show All Quotes</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="content">
+        {% block content %}
+        <!-- Child templates will insert their content here -->
+        {% endblock %}
+    </div>
+
+    <!-- Footer (optional) -->
+    <footer>
+        <p>&copy; 2024 Dana Yim</p>
+    </footer>
+</body>
+</html>

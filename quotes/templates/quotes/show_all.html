@@ -1,0 +1,28 @@
+{% extends 'quotes/base.html' %}
+
+{% block title %}All Quotes{% endblock %}
+
+{% block content %}
+    <h2>All Quotes</h2>
+
+    <!-- Display All Quotes -->
+    <div class="quotes-list">
+        <ul>
+            {% for quote in quotes %}
+                <li class="quote-item">{{ quote }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Display All Images -->
+    <h2>Images</h2>
+    <div class="images-list">
+        <ul>
+            {% for image in images %}
+                <li class="image-item">
+                    <img src="{{ image }}" alt="Image" class="quote-image">
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'quotes/base.html' %}
+
+{% block title %}Random Quote{% endblock %}
+
+{% block content %}
+    <div class="quote-container">
+        <img src="{{ image }}" alt="Random Image" class="quote-image">
+        <p class="quote-text">"{{ quote }}"</p>
+    </div>
+{% endblock %}
