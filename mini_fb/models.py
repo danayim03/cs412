@@ -1,9 +1,8 @@
 from django.db import models
 
-# Create your models here.
 
 # Create your models here.
-class Article(models.Model):
+class Profile(models.Model):
 
     # data attributes:
     first_name = models.TextField(blank=False)
