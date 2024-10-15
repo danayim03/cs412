@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 
 # Profile model (original code)
 class Profile(models.Model):
@@ -15,6 +16,9 @@ class Profile(models.Model):
 
     def get_status_messages(self):
         return StatusMessage.objects.filter(profile=self).order_by('-timestamp')
+    
+    def get_absolute_url(self):
+        return reverse('show_profile', args=[str(self.pk)])
 
 # New StatusMessage model
 class StatusMessage(models.Model):
