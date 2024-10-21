@@ -1,0 +1,33 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+    <h1>Update Profile for {{ form.instance.first_name }} {{ form.instance.last_name }}</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- City Field -->
+        <div class="form-field">
+            <label for="id_city"><strong>City:</strong></label>
+            {{ form.city }}
+        </div>
+
+        <!-- Email Address Field -->
+        <div class="form-field">
+            <label for="id_email_address"><strong>Email Address:</strong></label>
+            {{ form.email_address }}
+        </div>
+
+        <!-- Image URL Field -->
+        <div class="form-field">
+            <label for="id_image_url"><strong>Profile Image URL:</strong></label>
+            {{ form.image_url }}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-actions">
+            <button type="submit">Update Profile</button>
+            <a href="{% url 'show_profile' form.instance.pk %}">Cancel</a>
+        </div>
+    </form>
+{% endblock %}

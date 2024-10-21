@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from . models import *
-from django.views.generic import ListView, DetailView, CreateView
-from .forms import CreateProfileForm, CreateStatusMessageForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
 from django.urls import reverse
 from .models import Profile, StatusMessage
 
@@ -63,3 +63,14 @@ class CreateStatusMessageView(CreateView):
     def get_success_url(self):
         '''Redirect to the profile page for the profile related to this status message.'''
         return reverse('show_profile', args=[self.kwargs['pk']])
+    
+class UpdateProfileView(UpdateView):
+    '''A view to update an existing profile.'''
+
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = 'mini_fb/update_profile_form.html'
+
+    def get_success_url(self):
+        '''Redirect to the profile page after the profile is updated.'''
+        return reverse('show_profile', args=[self.object.pk])

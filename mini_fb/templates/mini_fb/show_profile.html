@@ -16,6 +16,11 @@
     <div class="profile-details">
         <h2>{{ profile.first_name }} {{ profile.last_name }}</h2>
         <p>{{ profile.city }}</p>
+
+        <!-- Add Update Profile Link -->
+        <div class="update-profile-link">
+            <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
+        </div>
     </div>
 </div>
 
