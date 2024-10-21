@@ -1,0 +1,21 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<h1>Update Status Message</h1>
+
+<!-- Display the current status message details -->
+<div class="status-message">
+    <p><strong>{{ form.message.value }}</strong></p>
+    <p>{{ status_message.timestamp|date:"Y-m-d H:i" }}</p>
+</div>
+
+<!-- Form for updating the status message -->
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <!-- Buttons to confirm or cancel the update -->
+    <button type="submit">Update Status</button>
+    <a href="{% url 'show_profile' status_message.profile.pk %}">Cancel</a>
+</form>
+{% endblock %}

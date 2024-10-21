@@ -2,8 +2,8 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from . models import *
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, CreateStatusMessageForm
 from django.urls import reverse
 from .models import Profile, StatusMessage
 
@@ -66,7 +66,6 @@ class CreateStatusMessageView(CreateView):
     
 class UpdateProfileView(UpdateView):
     '''A view to update an existing profile.'''
-
     model = Profile
     form_class = UpdateProfileForm
     template_name = 'mini_fb/update_profile_form.html'
@@ -74,3 +73,28 @@ class UpdateProfileView(UpdateView):
     def get_success_url(self):
         '''Redirect to the profile page after the profile is updated.'''
         return reverse('show_profile', args=[self.object.pk])
+    
+class DeleteStatusMessageView(DeleteView):
+    '''A view to delete a specific status message.'''
+    model = StatusMessage
+    template_name = 'mini_fb/delete_status_form.html' 
+    context_object_name = 'status_message'
+
+    def get_success_url(self):
+        '''Redirect to the profile page after the status message is deleted.'''
+        status_message = self.get_object()
+        profile_id = status_message.profile.pk
+        return reverse('show_profile', args=[profile_id])
+    
+class UpdateStatusMessageView(UpdateView):
+    '''A view to update an existing status message.'''
+    model = StatusMessage
+    form_class = CreateStatusMessageForm
+    template_name = 'mini_fb/update_status_form.html'
+    context_object_name = 'status_message'
+
+    def get_success_url(self):
+        '''Redirect to the profile page after the status message is updated.'''
+        status_message = self.get_object()
+        profile_id = status_message.profile.pk
+        return reverse('show_profile', args=[profile_id])

@@ -45,6 +45,16 @@
                     <!-- No images for this status -->
                 {% endfor %}
             </div>
+
+            <!-- Add Update Link -->
+            <div class="update-status-link">
+                <a href="{% url 'update_status' status.pk %}">Update</a>
+            </div>
+            
+            <!-- Add Delete Link for each Status Message -->
+            <div class="delete-status-link">
+                <a href="{% url 'delete_status' status.pk %}">Delete</a>
+            </div>
         </div>
     {% empty %}
         <p>No status messages to display.</p>
