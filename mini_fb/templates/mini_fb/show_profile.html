@@ -27,10 +27,19 @@
 <!-- Status Messages -->
 <div class="status-messages">
     <h3>Status Messages</h3>
-    {% for message in profile.get_status_messages %}
+    {% for status in profile.get_status_messages %}
         <div class="status-message">
-            <p><strong>{{ message.timestamp|date:"Y-m-d H:i" }}</strong></p>
-            <p>{{ message.message }}</p>
+            <p><strong>{{ status.timestamp|date:"Y-m-d H:i" }}</strong></p>
+            <p>{{ status.message }}</p>
+            
+            <!-- Display associated images if they exist -->
+            <div class="status-images">
+                {% for img in status.get_images %}
+                    <img src="{{ img.image_file.url }}" alt="Image for {{ status.message }}" class="status-image">
+                {% empty %}
+                    <!-- No images for this status -->
+                {% endfor %}
+            </div>
         </div>
     {% empty %}
         <p>No status messages to display.</p>
