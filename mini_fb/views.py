@@ -51,6 +51,13 @@ class CreateStatusMessageView(CreateView):
         '''Attach the Profile object to the status message.'''
         profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
         form.instance.profile = profile
+        sm = form.save()
+        files = self.request.FILES.getlist('files')
+
+        for file in files:
+            image = Image(image_file=file, status_message=sm)
+            image.save()
+
         return super().form_valid(form)
 
     def get_success_url(self):
