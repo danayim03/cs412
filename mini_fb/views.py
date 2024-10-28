@@ -1,8 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 # Create your views here.
 from . models import *
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, CreateStatusMessageForm
 from django.urls import reverse
 from .models import Profile, StatusMessage
@@ -98,3 +98,25 @@ class UpdateStatusMessageView(UpdateView):
         status_message = self.get_object()
         profile_id = status_message.profile.pk
         return reverse('show_profile', args=[profile_id])
+    
+class CreateFriendView(View):
+    '''A view to create a friend relationship between two profiles.'''
+    def dispatch(self, request, *args, **kwargs):
+        profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
+        other_profile = get_object_or_404(Profile, pk=self.kwargs['other_pk'])
+        profile.add_friend(other_profile)
+        
+        return redirect('show_profile', pk=profile.pk)
+    
+class ShowFriendSuggestionsView(DetailView):
+    '''A view to display friend suggestions for a given profile.'''
+    model = Profile
+    template_name = 'mini_fb/friend_suggestions.html'
+    context_object_name = 'profile'
+    def get_context_data(self, **kwargs):
+        '''Add friend suggestions to the context.'''
+        context = super().get_context_data(**kwargs)
+        profile = self.get_object()
+        friend_suggestions = profile.get_friend_suggestions()
+        context['friend_suggestions'] = friend_suggestions
+        return context
