@@ -1,0 +1,46 @@
+{% extends 'mini_fb/base.html' %}
+
+{% block content %}
+<div class="news-feed">
+    <h2>News Feed for {{ profile.first_name }} {{ profile.last_name }}</h2>
+
+    {% if news_feed %}
+        <ul>
+            {% for status in news_feed %}
+                <li>
+                    <div class="status-message-card">
+                        <div class="profile-details">
+                            <!-- Profile image of the person who wrote the status -->
+                            {% if status.profile.image_url %}
+                                <img src="{{ status.profile.image_url }}" alt="{{ status.profile.first_name }}'s profile picture" class="profile-pic">
+                            {% else %}
+                                <p>No Image Available</p>
+                            {% endif %}
+
+                            <!-- Name of the person who wrote the status -->
+                            <p><strong>{{ status.profile.first_name }} {{ status.profile.last_name }}</strong></p>
+                        </div>
+
+                        <!-- Status message content -->
+                        <div class="status-message-content">
+                            <p><strong>{{ status.timestamp|date:"Y-m-d H:i" }}</strong></p>
+                            <p>{{ status.message }}</p>
+
+                            <!-- Display associated images if they exist -->
+                            <div class="status-images">
+                                {% for img in status.get_images %}
+                                    <img src="{{ img.image_file.url }}" alt="Image for {{ status.message }}" class="status-image">
+                                {% empty %}
+                                    <!-- No images for this status -->
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No status messages to display in the news feed.</p>
+    {% endif %}
+</div>
+{% endblock %}

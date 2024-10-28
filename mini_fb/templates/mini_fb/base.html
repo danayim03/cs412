@@ -14,7 +14,10 @@
         <!-- Link to create a new profile -->
         <p>
             <a href="{% url 'show_all_profiles' %}">View All Profiles</a> |
-            <a href="{% url 'create_profile' %}">Create a New Profile</a>
+            <a href="{% url 'create_profile' %}">Create a New Profile</a> |
+            {% if profile %}
+                <a href="{% url 'news_feed' profile.pk %}">View News Feed</a>
+            {% endif %}
         </p>
     </header>
 

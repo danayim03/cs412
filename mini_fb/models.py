@@ -28,7 +28,6 @@ class Profile(models.Model):
         friends += [friend.profile1 for friend in friends_as_profile2]  # Friends where self is profile2
 
         return friends
-    
 
     def add_friend(self, other):
         # Prevent self-friending
@@ -44,12 +43,17 @@ class Profile(models.Model):
             new_friend.save()
 
     def get_friend_suggestions(self):
-        # Get the list of current friends
         current_friends = self.get_friends()
-        # Get all profiles except the current profile and current friends
         suggestions = Profile.objects.exclude(pk=self.pk).exclude(pk__in=[friend.pk for friend in current_friends])
 
         return suggestions
+    
+    def get_news_feed(self):
+        friends = self.get_friends()
+        profile_ids = [self.pk] + [friend.pk for friend in friends]
+        news_feed = StatusMessage.objects.filter(profile__in=profile_ids).order_by('-timestamp')
+
+        return news_feed
     
 # New StatusMessage model
 class StatusMessage(models.Model):
