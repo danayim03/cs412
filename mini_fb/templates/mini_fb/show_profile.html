@@ -60,5 +60,23 @@
         <p>No status messages to display.</p>
     {% endfor %}
 </div>
+
+<!-- Display Friends -->
+<div class="friends-list">
+    <h3>{{ profile.first_name }}'s Friends</h3>
+    <div class="friends-container">
+        {% for friend in profile.get_friends %}
+            <div class="friend-item">
+                <a href="{% url 'show_profile' friend.pk %}">
+                    <img src="{{ friend.image_url }}" alt="{{ friend.first_name }}'s Profile Image" class="friend-pic">
+                    <p>{{ friend.first_name }} {{ friend.last_name }}</p>
+                </a>
+            </div>
+        {% empty %}
+            <p>No friends to display.</p>
+        {% endfor %}
+    </div>
+</div>
+
 {% endblock %}
 

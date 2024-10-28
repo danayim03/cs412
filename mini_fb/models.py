@@ -19,6 +19,15 @@ class Profile(models.Model):
     
     def get_absolute_url(self):
         return reverse('show_profile', args=[str(self.pk)])
+    
+    def get_friends(self):
+        friends_as_profile1 = Friend.objects.filter(profile1=self)
+        friends_as_profile2 = Friend.objects.filter(profile2=self)
+
+        friends = [friend.profile2 for friend in friends_as_profile1]  # Friends where self is profile1
+        friends += [friend.profile1 for friend in friends_as_profile2]  # Friends where self is profile2
+
+        return friends
 
 # New StatusMessage model
 class StatusMessage(models.Model):
@@ -41,3 +50,12 @@ class Image(models.Model):
 
     def __str__(self):
         return f"Image for {self.status_message} uploaded at {self.timestamp}"
+    
+class Friend(models.Model):
+    # Data attributes
+    profile1 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friends1')
+    profile2 = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='friends2')
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+            return f"{self.profile1.first_name} {self.profile1.last_name} & {self.profile2.first_name} {self.profile2.last_name}"
