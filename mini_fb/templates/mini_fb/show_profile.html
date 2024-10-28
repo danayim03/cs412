@@ -6,7 +6,7 @@
     <!-- Profile Image -->
     <div class="profile-image">
         {% if profile.image_url %}
-            <img src="{{ profile.image_url }}" class="profile-pic">
+            <img src="{{ profile.image_url }}" class="profile-pic" width="100" height="100">
         {% else %}
             <p>No Image</p>
         {% endif %}
@@ -40,7 +40,7 @@
             <!-- Display associated images if they exist -->
             <div class="status-images">
                 {% for img in status.get_images %}
-                    <img src="{{ img.image_file.url }}" alt="Image for {{ status.message }}" class="status-image">
+                    <img src="{{ img.image_file.url }}" width="100" height="100" alt="Image for {{ status.message }}" class="status-image">
                 {% empty %}
                     <!-- No images for this status -->
                 {% endfor %}
@@ -68,7 +68,7 @@
         {% for friend in profile.get_friends %}
             <div class="friend-item">
                 <a href="{% url 'show_profile' friend.pk %}">
-                    <img src="{{ friend.image_url }}" alt="{{ friend.first_name }}'s Profile Image" class="friend-pic">
+                    <img src="{{ friend.image_url }}" alt="{{ friend.first_name }}'s Profile Image" class="friend-pic" width="100" height="100">
                     <p>{{ friend.first_name }} {{ friend.last_name }}</p>
                 </a>
             </div>

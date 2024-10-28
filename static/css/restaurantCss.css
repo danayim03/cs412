@@ -14,7 +14,7 @@ h1, h2, h3 {
 
 h1 {
     font-size: 2.5em;
-    color: #ff6f61;
+    color: #444;
     margin-bottom: 0;
 }
 
@@ -46,7 +46,7 @@ li {
 
 /* Header */
 header {
-    background-color: #ff6f61;
+    background-color: #ffb6b9;
     padding: 20px;
     text-align: center;
     color: white;
@@ -56,6 +56,7 @@ header {
 header h1 {
     margin: 0;
     font-size: 3em;
+    color: white;
 }
 
 /* Navigation */
