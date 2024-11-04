@@ -5,6 +5,22 @@
 
 <form method="post">
     {% csrf_token %}
+
+    <!-- Username Field from UserCreationForm -->
+    <div class="form-field">
+        <label for="id_username">Username:</label>
+        {{ user_form.username }}
+    </div>
+
+    <!-- Password Fields from UserCreationForm -->
+    <div class="form-field">
+        <label for="id_password1">Password:</label>
+        {{ user_form.password1 }}
+    </div>
+    <div class="form-field">
+        <label for="id_password2">Confirm Password:</label>
+        {{ user_form.password2 }}
+    </div>
     
     <!-- First Name Field -->
     <div class="form-field">

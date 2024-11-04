@@ -8,7 +8,7 @@ from django.urls import reverse
 from .models import Profile, StatusMessage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-
+from django.contrib.auth.forms import UserCreationForm
 
 # class-based view
 class ShowAllProfilesView(ListView):
@@ -35,6 +35,25 @@ class CreateProfileView(CreateView):
     def get_success_url(self):
         '''Redirect to the profile page of the newly created profile.'''
         return self.object.get_absolute_url()
+
+    def get_context_data(self, **kwargs):
+        '''Provide both CreateProfileForm and UserCreationForm in the context data.'''
+        context = super().get_context_data(**kwargs)
+        context['user_form'] = UserCreationForm()
+        context['profile_form'] = self.get_form()
+        return context
+    
+    def form_valid(self, form):
+        user_form = UserCreationForm(self.request.POST)
+        
+        if user_form.is_valid():
+            user = user_form.save()
+            form.instance.user = user
+            self.object = form.save()
+
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
     
 class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     '''A view to create a new status message for a specific profile.'''
