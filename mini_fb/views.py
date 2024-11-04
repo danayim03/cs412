@@ -39,21 +39,27 @@ class CreateProfileView(CreateView):
     def get_context_data(self, **kwargs):
         '''Provide both CreateProfileForm and UserCreationForm in the context data.'''
         context = super().get_context_data(**kwargs)
-        context['user_form'] = UserCreationForm()
-        context['profile_form'] = self.get_form()
+        context['user_form'] = kwargs.get('user_form', UserCreationForm())
         return context
     
     def form_valid(self, form):
+        '''Handle form validation for both user and profile forms.'''
         user_form = UserCreationForm(self.request.POST)
         
         if user_form.is_valid():
             user = user_form.save()
             form.instance.user = user
             self.object = form.save()
-
             return super().form_valid(form)
         else:
-            return self.form_invalid(form)
+            # Render the form with user_form errors if validation fails
+            return self.form_invalid(form, user_form)
+
+    def form_invalid(self, form, user_form=None):
+        '''Customize form_invalid to handle errors in both forms.'''
+        context = self.get_context_data(form=form, user_form=user_form or UserCreationForm(self.request.POST))
+        return self.render_to_response(context)
+
     
 class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     '''A view to create a new status message for a specific profile.'''
