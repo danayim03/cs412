@@ -17,17 +17,21 @@
         <h2>{{ profile.first_name }} {{ profile.last_name }}</h2>
         <p>{{ profile.city }}</p>
 
-        <!-- Add Update Profile Link -->
-        <div class="update-profile-link">
-            <a href="{% url 'update_profile' profile.pk %}">Update Profile</a>
-        </div>
+        {% if user.is_authenticated and user == profile.user %}
+            <!-- Add Update Profile Link -->
+            <div class="update-profile-link">
+                <a href="{% url 'update_profile' %}">Update Profile</a>
+            </div>
+        {% endif %}
     </div>
 </div>
 
-<!-- Link to Create a New Status Message -->
-<div class="create-status-link">
-    <a href="{% url 'create_status' profile.pk %}">Post a New Status Message</a>
-</div>
+{% if user.is_authenticated and user == profile.user %}
+    <!-- Link to Create a New Status Message -->
+    <div class="create-status-link">
+        <a href="{% url 'create_status' %}">Post a New Status Message</a>
+    </div>
+{% endif %}
 
 <!-- Status Messages -->
 <div class="status-messages">
@@ -41,20 +45,19 @@
             <div class="status-images">
                 {% for img in status.get_images %}
                     <img src="{{ img.image_file.url }}" width="100" height="100" alt="Image for {{ status.message }}" class="status-image">
-                {% empty %}
-                    <!-- No images for this status -->
                 {% endfor %}
             </div>
 
-            <!-- Add Update Link -->
-            <div class="update-status-link">
-                <a href="{% url 'update_status' status.pk %}">Update</a>
-            </div>
-            
-            <!-- Add Delete Link for each Status Message -->
-            <div class="delete-status-link">
-                <a href="{% url 'delete_status' status.pk %}">Delete</a>
-            </div>
+            {% if user.is_authenticated and user == profile.user %}
+                <!-- Add Update and Delete Links -->
+                <div class="update-status-link">
+                    <a href="{% url 'update_status' status.pk %}">Update</a>
+                </div>
+                
+                <div class="delete-status-link">
+                    <a href="{% url 'delete_status' status.pk %}">Delete</a>
+                </div>
+            {% endif %}
         </div>
     {% empty %}
         <p>No status messages to display.</p>
@@ -78,11 +81,11 @@
     </div>
 </div>
 
-<!-- Friend Suggestions Button -->
-<div class="friend-suggestions-link">
-    <a href="{% url 'friend_suggestions' profile.pk %}" class="btn btn-primary">See Friend Suggestions hehe YAYY</a>
-</div>
-
+{% if user.is_authenticated and user == profile.user %}
+    <!-- Friend Suggestions Button -->
+    <div class="friend-suggestions-link">
+        <a href="{% url 'friend_suggestions' %}" class="btn btn-primary">See Friend Suggestions hehe YAYY</a>
+    </div>
+{% endif %}
 
 {% endblock %}
-

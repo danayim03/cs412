@@ -6,6 +6,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .forms import CreateProfileForm, CreateStatusMessageForm, UpdateProfileForm, CreateStatusMessageForm
 from django.urls import reverse
 from .models import Profile, StatusMessage
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+
 
 # class-based view
 class ShowAllProfilesView(ListView):
@@ -33,7 +36,7 @@ class CreateProfileView(CreateView):
         '''Redirect to the profile page of the newly created profile.'''
         return self.object.get_absolute_url()
     
-class CreateStatusMessageView(CreateView):
+class CreateStatusMessageView(LoginRequiredMixin, CreateView):
     '''A view to create a new status message for a specific profile.'''
 
     model = StatusMessage
@@ -43,13 +46,14 @@ class CreateStatusMessageView(CreateView):
     def get_context_data(self, **kwargs):
         '''Add the Profile object to the context data.'''
         context = super().get_context_data(**kwargs)
-        profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
-        context['profile'] = profile
+        context['profile'] = self.get_object()
         return context
-
+    
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
+    
     def form_valid(self, form):
-        '''Attach the Profile object to the status message.'''
-        profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
+        profile = self.get_object()
         form.instance.profile = profile
         sm = form.save()
         files = self.request.FILES.getlist('files')
@@ -61,23 +65,25 @@ class CreateStatusMessageView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        '''Redirect to the profile page for the profile related to this status message.'''
-        return reverse('show_profile', args=[self.kwargs['pk']])
+        return reverse('show_profile', args=[self.get_object().pk])
     
-class UpdateProfileView(UpdateView):
+class UpdateProfileView(LoginRequiredMixin, UpdateView):
     '''A view to update an existing profile.'''
     model = Profile
     form_class = UpdateProfileForm
     template_name = 'mini_fb/update_profile_form.html'
 
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
+    
     def get_success_url(self):
         '''Redirect to the profile page after the profile is updated.'''
         return reverse('show_profile', args=[self.object.pk])
     
-class DeleteStatusMessageView(DeleteView):
+class DeleteStatusMessageView(LoginRequiredMixin, DeleteView):
     '''A view to delete a specific status message.'''
     model = StatusMessage
-    template_name = 'mini_fb/delete_status_form.html' 
+    template_name = 'mini_fb/delete_status_form.html'
     context_object_name = 'status_message'
 
     def get_success_url(self):
@@ -86,7 +92,7 @@ class DeleteStatusMessageView(DeleteView):
         profile_id = status_message.profile.pk
         return reverse('show_profile', args=[profile_id])
     
-class UpdateStatusMessageView(UpdateView):
+class UpdateStatusMessageView(LoginRequiredMixin, UpdateView):
     '''A view to update an existing status message.'''
     model = StatusMessage
     form_class = CreateStatusMessageForm
@@ -99,39 +105,41 @@ class UpdateStatusMessageView(UpdateView):
         profile_id = status_message.profile.pk
         return reverse('show_profile', args=[profile_id])
     
-class CreateFriendView(View):
-    '''A view to create a friend relationship between two profiles.'''
+class CreateFriendView(LoginRequiredMixin, View):
+    def get_object(self):
+        return get_object_or_404(Profile, user=self.request.user)
+
     def dispatch(self, request, *args, **kwargs):
-        profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
+        profile = self.get_object()
         other_profile = get_object_or_404(Profile, pk=self.kwargs['other_pk'])
         profile.add_friend(other_profile)
-        
         return redirect('show_profile', pk=profile.pk)
-    
-class ShowFriendSuggestionsView(DetailView):
-    '''A view to display friend suggestions for a given profile.'''
+
+class ShowFriendSuggestionsView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'mini_fb/friend_suggestions.html'
     context_object_name = 'profile'
 
+    def get_object(self):
+        # Get the profile associated with the logged-in user
+        return get_object_or_404(Profile, user=self.request.user)
+
     def get_context_data(self, **kwargs):
-        '''Add friend suggestions to the context.'''
         context = super().get_context_data(**kwargs)
-        profile = self.get_object()
-        friend_suggestions = profile.get_friend_suggestions()
-        context['friend_suggestions'] = friend_suggestions
+        context['friend_suggestions'] = self.get_object().get_friend_suggestions()
         return context
+
     
-class ShowNewsFeedView(DetailView):
-    '''A view to display the news feed for a given profile.'''
+class ShowNewsFeedView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'mini_fb/news_feed.html'
     context_object_name = 'profile'
 
+    def get_object(self):
+        # Get the profile associated with the logged-in user
+        return get_object_or_404(Profile, user=self.request.user)
+
     def get_context_data(self, **kwargs):
-        '''Add the news feed to the context.'''
         context = super().get_context_data(**kwargs)
-        profile = self.get_object()  
-        news_feed = profile.get_news_feed() 
-        context['news_feed'] = news_feed 
+        context['news_feed'] = self.get_object().get_news_feed()
         return context

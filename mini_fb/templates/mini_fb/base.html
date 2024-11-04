@@ -12,12 +12,30 @@
     <!-- Header Section -->
     <header>
         <h1>Welcome to Mini Facebook.</h1>
+        <!-- Show logged-in status for debugging -->
+        <p>
+            {% if user.is_authenticated %}
+                Logged in as {{ user.username }}
+            {% else %}
+                Not logged in
+            {% endif %}
+        </p>
         <!-- Link to create a new profile -->
         <p>
             <a href="{% url 'show_all_profiles' %}">View All Profiles</a> |
             <a href="{% url 'create_profile' %}">Create a New Profile</a> |
-            {% if profile %}
-                <a href="{% url 'news_feed' profile.pk %}">View News Feed</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'news_feed' %}">View News Feed</a>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+                <!-- Logout form -->
+                <form action="{% url 'logout' %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
             {% endif %}
         </p>
     </header>
