@@ -45,27 +45,27 @@ def load_data():
     for line in f:
         try:
             fields = line.split(',')
-            # Create a new Voter object using the data from the fields
+            # Map the fields correctly as per your CSV structure
             voter = Voter(
-                first_name=fields[1],
-                last_name=fields[0],
-                date_of_birth=fields[6],
-                date_of_registration=fields[7],
-                street_number=fields[2],
-                street_name=fields[3],
-                apartment_number=fields[4] if fields[4] else '',
-                zip_code=int(fields[5]),
-                party_affiliation=fields[8],
-                precinct_number=int(fields[9]),
-                v20state=fields[10].strip().lower() == 'true',
-                v21town=fields[11].strip().lower() == 'true',
-                v21primary=fields[12].strip().lower() == 'true',
-                v22general=fields[13].strip().lower() == 'true',
-                v23town=fields[14].strip().lower() == 'true',
-                voter_score=int(fields[15].strip())
+                last_name=fields[1].strip(),
+                first_name=fields[2].strip(),
+                street_number=fields[3].strip(),
+                street_name=fields[4].strip(),
+                apartment_number=fields[5].strip() if fields[5].strip() else '',
+                zip_code=int(fields[6].strip()),
+                date_of_birth=fields[7].strip(),
+                date_of_registration=fields[8].strip(),
+                party_affiliation=fields[9].strip(),
+                precinct_number=int(fields[10].strip()),
+                v20state=fields[11].strip().upper() == 'TRUE',
+                v21town=fields[12].strip().upper() == 'TRUE',
+                v21primary=fields[13].strip().upper() == 'TRUE',
+                v22general=fields[14].strip().upper() == 'TRUE',
+                v23town=fields[15].strip().upper() == 'TRUE',
+                voter_score=int(fields[16].strip())
             )
-            voter.save() # save this instance to the database.
+            voter.save()  # Save this instance to the database.
             print(f'Created result: {voter}')
 
-        except:
-            print(f"Exception on {fields}")
+        except Exception as e:
+            print(f"Exception on {fields}: {e}")

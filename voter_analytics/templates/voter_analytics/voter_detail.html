@@ -1,0 +1,27 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voter Detail</title>
+    <link rel="stylesheet" href="{% static 'stylesheet.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'voters' %}" class="button">Show Voter List</a> <!-- Show Voter List Button -->
+        <h1>Voter Detail</h1>
+    </header>
+    
+    <div>
+        <p><strong>Name:</strong> {{ voter.first_name }} {{ voter.last_name }}</p>
+        <p><strong>Address:</strong> 
+            <a href="https://www.google.com/maps/search/{{ voter.street_number }}+{{ voter.street_name }},+Newton,+Ma" target="_blank">
+                {{ voter.street_number }} {{ voter.street_name }}, Apartment {{ voter.apartment_number }}, Newton, MA
+            </a>
+        </p>
+        <p><strong>Date of Birth:</strong> {{ voter.date_of_birth|date:"M d, Y" }}</p>
+        <p><strong>Date of Registration:</strong> {{ voter.date_of_registration|date:"M d, Y" }}</p>
+        <p><strong>Party Affiliation:</strong> {{ voter.party_affiliation }}</p>
+        <p><strong>Voter Score:</strong> {{ voter.voter_score }}</p>
+
+</body>
+</html>
