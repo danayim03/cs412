@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView
-from django.db.models import Q
+from django.db.models.query import QuerySet
 from .models import Voter
 from django.db import models
 
