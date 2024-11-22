@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}BU CourseRoad{% endblock %}</title>
+    <style>
+        /* Style the navigation bar */
+        .header {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .nav-links {
+            display: inline-block;
+            padding: 10px 20px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #000;
+            margin: 0 15px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <div class="nav-links">
+            <a href="{% url 'home_page' %}">Home</a>
+            <a href="{% url 'user_list' %}">Users</a>
+            <a href="{% url 'academictrack_list' %}">Academic Tracks</a>
+            <a href="{% url 'classreview_list' %}">Class Reviews</a>
+            <a href="{% url 'course_list' %}">Courses</a>
+        </div>
+    </div>
+    
+    <!-- Main Content Section -->
+    <div>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

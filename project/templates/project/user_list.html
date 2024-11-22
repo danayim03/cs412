@@ -1,0 +1,14 @@
+{% extends "project/base.html" %}
+
+{% block title %}User List{% endblock %}
+
+{% block content %}
+<h1>User List</h1>
+<ul>
+    {% for user in users %}
+        <li>
+            <a href="{% url 'user_detail' pk=user.id %}">{{ user.username }}</a> - {{ user.major }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

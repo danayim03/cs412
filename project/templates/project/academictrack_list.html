@@ -1,0 +1,14 @@
+{% extends "project/base.html" %}
+
+{% block title %}Academic Tracks{% endblock %}
+
+{% block content %}
+<h1>Academic Tracks</h1>
+<ul>
+    {% for track in academic_tracks %}
+        <li>
+            <a href="{% url 'academictrack_detail' pk=track.id %}">{{ track.user.username }} - {{ track.year }}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

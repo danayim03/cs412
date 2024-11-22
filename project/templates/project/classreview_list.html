@@ -1,0 +1,14 @@
+{% extends "project/base.html" %}
+
+{% block title %}Class Reviews{% endblock %}
+
+{% block content %}
+<h1>Class Reviews</h1>
+<ul>
+    {% for review in class_reviews %}
+        <li>
+            <a href="{% url 'classreview_detail' pk=review.id %}">{{ review.course.course_name }}</a> by {{ review.author.username }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

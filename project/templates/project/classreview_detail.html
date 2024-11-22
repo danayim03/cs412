@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Review for {{ class_review.course.course_name }}</title>
+</head>
+<body>
+    <h1>Review for {{ class_review.course.course_name }}</h1>
+    <p>Author: {{ class_review.author.username }}</p>
+    <p>Rating: {{ class_review.rating }}/5</p>
+    <p>Difficulty: {{ class_review.difficulty }}/5</p>
+    <p>Review: {{ class_review.review_text }}</p>
+    <p>Recommend: {{ class_review.recommend_to_take }}</p>
+    <a href="{% url 'classreview_list' %}">Back to Class Reviews</a>
+</body>
+</html>
