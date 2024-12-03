@@ -4,6 +4,13 @@
 
 {% block content %}
 <h1>Academic Tracks</h1>
+
+<!-- Search Bar for usernames -->
+<form action="{% url 'academictrack_list' %}" method="GET">
+    <input type="search" name="user_search" placeholder="Search a username." aria-label="Search">
+    <button type="submit">Search</button>
+</form>
+
 <ul>
     {% for track in academic_tracks %}
         <li>

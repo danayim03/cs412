@@ -41,6 +41,16 @@ class AcademicTrackListView(ListView):
     template_name = 'project/academictrack_list.html'
     context_object_name = 'academic_tracks'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('user_search', '')
+        if search_query:
+            # Allows searching by author username
+            queryset = queryset.filter(
+                Q(user__username__icontains=search_query)
+            )
+        return queryset
+
 
 class AcademicTrackDetailView(DetailView):
     model = AcademicTrack
