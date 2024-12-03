@@ -20,5 +20,5 @@ urlpatterns = [
     
     # Class Review routes
     path('classreviews/', views.ClassReviewListView.as_view(), name='classreview_list'),
-    path('classreviews/<int:pk>/', views.ClassReviewDetailView.as_view(), name='classreview_detail'),
+    
 ]

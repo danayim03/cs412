@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView, TemplateView
 from django.shortcuts import get_object_or_404
 from .models import User, Course, AcademicTrack, AcademicTrackCourse, ClassReview
+from django.db.models import Q
 
 
 # Home Page View
@@ -87,6 +88,17 @@ class ClassReviewListView(ListView):
     model = ClassReview
     template_name = 'project/classreview_list.html'
     context_object_name = 'class_reviews'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('class_search', '')
+        if search_query:
+            # Allows searching by course name or author username
+            queryset = queryset.filter(
+                Q(course__course_name__icontains=search_query) |
+                Q(author__username__icontains=search_query)
+            )
+        return queryset
 
 
 class ClassReviewDetailView(DetailView):

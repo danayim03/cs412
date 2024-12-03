@@ -4,11 +4,24 @@
 
 {% block content %}
 <h1>Class Reviews</h1>
+
+<!-- Search Bar for Class Names -->
+<form action="{% url 'classreview_list' %}" method="GET">
+    <input type="search" name="class_search" placeholder="Search a class name or a username." aria-label="Search">
+    <button type="submit">Search</button>
+</form>
+
 <ul>
     {% for review in class_reviews %}
         <li>
-            <a href="{% url 'classreview_detail' pk=review.id %}">{{ review.course.course_name }}</a> by {{ review.author.username }}
+            <h2>{{ review.course.course_name }}</h2>
+            <p><strong>Author:</strong> {{ review.author.username }}</p>
+            <p><strong>Rating:</strong> {{ review.rating }}/5</p>
+            <p><strong>Difficulty:</strong> {{ review.difficulty }}/5</p>
+            <p><strong>Review:</strong> {{ review.review_text }}</p>
+            <p><strong>Recommend:</strong> {{ review.recommend_to_take|yesno:"Yes,No" }}</p>
         </li>
+        <hr>
     {% endfor %}
 </ul>
 {% endblock %}
