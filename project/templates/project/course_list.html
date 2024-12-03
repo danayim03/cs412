@@ -4,6 +4,13 @@
 
 {% block content %}
 <h1>Courses</h1>
+
+<!-- Search Bar for usernames -->
+<form action="{% url 'course_list' %}" method="GET">
+    <input type="search" name="class_search" placeholder="Search a course." aria-label="Search">
+    <button type="submit">Search</button>
+</form>
+
 <ul>
     {% for course in courses %}
         <li>
