@@ -1,12 +1,30 @@
 from django.views.generic import ListView, DetailView, TemplateView
-from django.shortcuts import get_object_or_404
-from .models import User, Course, AcademicTrack, AcademicTrackCourse, ClassReview
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from .models import User, Course, AcademicTrack, AcademicTrackCourse, ClassReview
 
 # Home Page View
 class HomePageView(TemplateView):
     template_name = 'project/home.html'
+
+# Login View
+class CustomLoginView(LoginView):
+    template_name = 'project/login.html'
+
+# Sign-Up View
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Account created successfully. Please log in.')
+            return redirect('login')  # Redirect to the login page
+    else:
+        form = UserCreationForm()
+    return render(request, 'project/signup.html', {'form': form})
 
 
 # User Views
@@ -19,7 +37,6 @@ class UserListView(ListView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('user_search', '')
         if search_query:
-            # Allows searching by author username
             queryset = queryset.filter(
                 Q(username__icontains=search_query)
             )
@@ -42,7 +59,6 @@ class CourseListView(ListView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('class_search', '')
         if search_query:
-            # Allows searching by course name
             queryset = queryset.filter(
                 Q(course_name__icontains=search_query)
             )
@@ -65,7 +81,6 @@ class AcademicTrackListView(ListView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('user_search', '')
         if search_query:
-            # Allows searching by author username
             queryset = queryset.filter(
                 Q(user__username__icontains=search_query)
             )
@@ -78,18 +93,13 @@ class AcademicTrackDetailView(DetailView):
     context_object_name = 'academic_track'
 
     def get_context_data(self, **kwargs):
-        # Get the base context
         context = super().get_context_data(**kwargs)
-
-        # Get the user from the AcademicTrack instance
         user = self.object.user
 
-        # Get the user's classes grouped by year
         classes_by_year = AcademicTrackCourse.objects.filter(
             academic_track__user=user
         ).order_by('year_taken', 'semester')
 
-        # Group classes by year
         grouped_classes = {
             "Freshman": [],
             "Sophomore": [],
@@ -99,17 +109,16 @@ class AcademicTrackDetailView(DetailView):
         for course in classes_by_year:
             grouped_classes[course.academic_track.year].append(course)
 
-        # Add the grouped classes to the context
         context['grouped_classes'] = grouped_classes
         return context
-    
+
+
 class AcademicTrackYearView(ListView):
     model = AcademicTrack
     template_name = 'project/academictrack_year.html'
     context_object_name = 'academic_tracks'
 
     def get_queryset(self):
-        # Filter AcademicTrack objects based on the year passed in the URL
         return AcademicTrack.objects.filter(year=self.kwargs['year'])
 
 
@@ -123,7 +132,6 @@ class ClassReviewListView(ListView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('class_search', '')
         if search_query:
-            # Allows searching by course name or author username
             queryset = queryset.filter(
                 Q(course__course_name__icontains=search_query) |
                 Q(author__username__icontains=search_query)
