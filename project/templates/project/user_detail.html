@@ -9,9 +9,14 @@
     <p>Major: {{ user.major }}</p>
     <p>Year of Graduation: {{ user.year_of_graduation }}</p>
 
+    {% if user.academictrack_set.first %}
     <a href="{% url 'academictrack_detail' pk=user.academictrack_set.first.id %}">
         View Academic Track for {{ user.username }}
-    </a><br>
+    </a>
+    {% else %}
+        <p>{{ user.username }} does not have an Academic Track.</p>
+    {% endif %}
+
 
     <a href="{% url 'user_list' %}">Back to User List</a>
 </body>

@@ -9,9 +9,62 @@
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
+
+    <!-- Profile Editing Section -->
+    <h2>Edit Your Profile</h2>
+    <form method="post" action="{% url 'home_page' %}">
+        {% csrf_token %}
+        {{ edit_profile_form.as_p }}
+        <button type="submit" name="edit_profile">Save Changes</button>
+    </form>
+
+    <!-- Display profile update messages -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == "profile_success" %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% elif message.tags == "profile_error" %}
+                <div class="alert alert-danger">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <!-- Academic Tracks Section -->
+    <h2>Your Academic Tracks</h2>
+    <!-- Display academic track-related messages -->
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == "track_success" %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    
+    <ul>
+        {% for track in academic_tracks %}
+            <li>
+                {{ track.year }}
+                <!-- Delete Button -->
+                <form method="post" action="{% url 'delete_academic_track' pk=track.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% empty %}
+            <p>You don't have any academic tracks yet.</p>
+        {% endfor %}
+    </ul>
+
+    <!-- Add Academic Track -->
+    <h3>Add an Academic Track</h3>
+    <form method="post" action="{% url 'home_page' %}">
+        {% csrf_token %}
+        {{ academic_track_form.as_p }}
+        <button type="submit" name="add_academic_track">Add Track</button>
+    </form>
+
 {% else %}
     <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>
 {% endif %}
 
 {% endblock %}
-

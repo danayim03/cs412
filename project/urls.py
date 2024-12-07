@@ -1,10 +1,13 @@
 from django.urls import path
 from . import views
+from .views import DeleteAcademicTrackView
 from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     # Homepage
     path('', views.HomePageView.as_view(), name='home_page'),
+    path('delete_academic_track/<int:pk>/', DeleteAcademicTrackView.as_view(), name='delete_academic_track'),
+
 
     # Authentication routes
     path('login/', views.CustomLoginView.as_view(), name='login'),

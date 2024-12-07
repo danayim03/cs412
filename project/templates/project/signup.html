@@ -9,5 +9,14 @@
     <button type="submit">Sign Up</button>
 </form>
 
+<!-- Display form errors -->
+{% if form.errors %}
+    <ul>
+    {% for field, errors in form.errors.items %}
+        <li>{{ field }}: {{ errors|join:", " }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
 <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 {% endblock %}

@@ -1,12 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.urls import reverse
+from django.contrib.auth.models import AbstractUser
 
-class User(models.Model):
-    username = models.CharField(max_length=255)
+class CustomUser(AbstractUser):
+    username = models.CharField(max_length=255, unique=True)  # Ensure username is unique
     email = models.EmailField(unique=True)
-    major = models.CharField(max_length=255)
-    year_of_graduation = models.DateField()
+    major = models.CharField(max_length=255, blank=True, null=True)
+    year_of_graduation = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return self.username
@@ -22,7 +21,7 @@ class Course(models.Model):
         return self.course_name
 
 class AcademicTrack(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     year = models.CharField(max_length=50, choices=[
         ("Freshman", "Freshman"),
         ("Sophomore", "Sophomore"),
@@ -48,7 +47,7 @@ class AcademicTrackCourse(models.Model):
 
 class ClassReview(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     difficulty = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     review_text = models.TextField()
