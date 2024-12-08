@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import CustomUser, AcademicTrack
+from .models import CustomUser, AcademicTrack, AcademicTrackCourse
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -20,3 +20,8 @@ class AcademicTrackForm(forms.ModelForm):
     class Meta:
         model = AcademicTrack
         fields = ('year',)
+
+class AcademicTrackCourseForm(forms.ModelForm):
+    class Meta:
+        model = AcademicTrackCourse
+        fields = ['academic_track', 'course', 'semester', 'year_taken']

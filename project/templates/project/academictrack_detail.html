@@ -1,10 +1,13 @@
+{% extends "project/base.html" %}
+
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ academic_track.user.username }}'s Academic Track</title>
+    <title>{{ academic_track.user.username }}'s {{ academic_track.year }} Academic Track</title>
 </head>
 <body>
-    <h1>{{ academic_track.user.username }}'s Academic Track</h1>
+    <h1>{{ academic_track.user.username }}'s {{ academic_track.year }} Academic Track</h1>
 
     <h2>Classes Taken:</h2>
     <ul>
@@ -25,3 +28,4 @@
     <a href="{% url 'academictrack_list' %}">Back to Academic Tracks</a>
 </body>
 </html>
+{% endblock %}

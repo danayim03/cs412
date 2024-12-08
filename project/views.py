@@ -1,13 +1,13 @@
-from django.views.generic import ListView, DetailView, TemplateView, View
+from django.views.generic import ListView, DetailView, TemplateView, View, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from .models import CustomUser, Course, AcademicTrack, AcademicTrackCourse, ClassReview
-from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm
+from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, AcademicTrackCourseForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 
 
 # Home Page View
@@ -142,31 +142,59 @@ class AcademicTrackListView(ListView):
             )
         return queryset
 
+# Add AcademicTrackCourse View
+class AcademicTrackCourseCreateView(CreateView):
+    model = AcademicTrackCourse
+    template_name = 'project/edit_academic_track_course.html'
+    fields = ['course', 'semester', 'year_taken']
 
-class AcademicTrackDetailView(DetailView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        academic_track = get_object_or_404(AcademicTrack, pk=self.kwargs['pk'])
+        courses = AcademicTrackCourse.objects.filter(academic_track=academic_track).select_related('course')
+        context['academic_track'] = academic_track
+        context['courses'] = courses
+        return context
+
+    def form_valid(self, form):
+        academic_track = get_object_or_404(AcademicTrack, pk=self.kwargs['pk'])
+        form.instance.academic_track = academic_track
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('edit_academic_track_course', kwargs={'pk': self.kwargs['pk']})
+    
+class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
     model = AcademicTrack
     template_name = 'project/academictrack_detail.html'
     context_object_name = 'academic_track'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = self.object.user
 
-        classes_by_year = AcademicTrackCourse.objects.filter(
-            academic_track__user=user
-        ).order_by('year_taken', 'semester')
+        # Add courses for this academic track grouped by semester and year
+        courses = AcademicTrackCourse.objects.filter(academic_track=self.object).order_by('year_taken', 'semester')
+        context['courses'] = courses
 
-        grouped_classes = {
-            "Freshman": [],
-            "Sophomore": [],
-            "Junior": [],
-            "Senior": [],
-        }
-        for course in classes_by_year:
-            grouped_classes[course.academic_track.year].append(course)
+        # Group courses by year and semester
+        grouped_classes = {}
+        for course in courses:
+            year_semester = f"{course.year_taken} - {course.semester}"
+            if year_semester not in grouped_classes:
+                grouped_classes[year_semester] = []
+            grouped_classes[year_semester].append(course)
 
         context['grouped_classes'] = grouped_classes
         return context
+    
+class DeleteAcademicTrackCourseView(View):
+    def post(self, request, *args, **kwargs):
+        course_id = self.kwargs['course_id']
+        course = get_object_or_404(AcademicTrackCourse, id=course_id)
+        academic_track_id = course.academic_track.id
+        course.delete()
+        messages.success(request, 'Course successfully deleted.')
+        return redirect('edit_academic_track_course', pk=academic_track_id)
 
 
 class AcademicTrackYearView(ListView):

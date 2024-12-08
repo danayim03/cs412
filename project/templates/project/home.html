@@ -44,10 +44,12 @@
         {% for track in academic_tracks %}
             <li>
                 {{ track.year }}
+                <!-- Edit Button -->
+                <a href="{% url 'edit_academic_track_course' track.pk %}" class="btn btn-primary btn-sm">Edit</a>
                 <!-- Delete Button -->
                 <form method="post" action="{% url 'delete_academic_track' pk=track.pk %}" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit">Delete</button>
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
             </li>
         {% empty %}
@@ -60,7 +62,7 @@
     <form method="post" action="{% url 'home_page' %}">
         {% csrf_token %}
         {{ academic_track_form.as_p }}
-        <button type="submit" name="add_academic_track">Add Track</button>
+        <button type="submit" name="add_academic_track" class="btn btn-success">Add Track</button>
     </form>
 
 {% else %}
