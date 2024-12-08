@@ -1,10 +1,11 @@
+from django.http import Http404, HttpResponseRedirect
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from .models import CustomUser, Course, AcademicTrack, AcademicTrackCourse, ClassReview
-from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, AcademicTrackCourseForm
+from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, AcademicTrackCourseForm, ClassReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
@@ -137,9 +138,7 @@ class AcademicTrackListView(ListView):
         queryset = super().get_queryset()
         search_query = self.request.GET.get('user_search', '')
         if search_query:
-            queryset = queryset.filter(
-                Q(user__username__icontains=search_query)
-            )
+            queryset = queryset.filter(user__username__icontains=search_query)
         return queryset
 
 # Add AcademicTrackCourse View
@@ -169,14 +168,22 @@ class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
     template_name = 'project/academictrack_detail.html'
     context_object_name = 'academic_track'
 
+    def get_object(self, queryset=None):
+        # Allow access to any academic track, regardless of the logged-in user
+        try:
+            track = super().get_object(queryset)
+            return track
+        except AcademicTrack.DoesNotExist:
+            raise Http404("No academic track found matching the query")
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # Retrieve all tracks for the user who owns this academic track
+        user_tracks = AcademicTrack.objects.filter(user=self.object.user).order_by('year')
+        context['user_tracks'] = user_tracks
 
-        # Add courses for this academic track grouped by semester and year
+        # Group courses for the current track by year and semester
         courses = AcademicTrackCourse.objects.filter(academic_track=self.object).order_by('year_taken', 'semester')
-        context['courses'] = courses
-
-        # Group courses by year and semester
         grouped_classes = {}
         for course in courses:
             year_semester = f"{course.year_taken} - {course.semester}"
@@ -186,6 +193,7 @@ class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
 
         context['grouped_classes'] = grouped_classes
         return context
+
     
 class DeleteAcademicTrackCourseView(View):
     def post(self, request, *args, **kwargs):
@@ -214,13 +222,32 @@ class ClassReviewListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_query = self.request.GET.get('class_search', '')
+        search_query = self.request.GET.get('class_search', '').strip()  # Get the search query
         if search_query:
             queryset = queryset.filter(
-                Q(course__course_name__icontains=search_query) |
-                Q(author__username__icontains=search_query)
+                Q(course__course_name__icontains=search_query)  # Filter by course name
             )
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pass all courses for the review form
+        context['form'] = ClassReviewForm()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            form = ClassReviewForm(request.POST)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.author = request.user  # Automatically set the author
+                review.save()
+                messages.success(request, "Your review has been submitted.")
+            else:
+                messages.error(request, "There was an error with your submission.")
+        else:
+            messages.error(request, "You must be logged in to submit a review.")
+        return HttpResponseRedirect(request.path_info)
 
 
 class ClassReviewDetailView(DetailView):

@@ -6,6 +6,7 @@
 <h1>Class Reviews</h1>
 
 <!-- Search Bar for Class Names -->
+<h2>Search Reviews</h2>
 <form action="{% url 'classreview_list' %}" method="GET">
     <input type="search" name="class_search" placeholder="Search a class name or a username." aria-label="Search">
     <button type="submit">Search</button>
@@ -21,7 +22,19 @@
             <p><strong>Review:</strong> {{ review.review_text }}</p>
             <p><strong>Recommend:</strong> {{ review.recommend_to_take|yesno:"Yes,No" }}</p>
         </li>
-        <hr>
+        
     {% endfor %}
 </ul>
+
+<hr>
+
+<!-- Add Class Review Form -->
+<h2>Submit a Class Review</h2>
+<form method="post" action="{% url 'classreview_list' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
 {% endblock %}
