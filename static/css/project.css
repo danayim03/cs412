@@ -16,8 +16,21 @@
     font-style: normal;
 }
 
+.heading-container {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically, if needed */
+    height: 100%; /* Adjust this for your specific layout */
+    text-align: left; /* Keeps the text aligned left */
+}
+
+.heading {
+    display: inline-block; /* Shrinks to fit content */
+}
+
 .italic-text {
-    font-style: italic;
+    font-size: 2em; /* Makes the second part of the text larger */
+    font-style: italic; /* Adds italic style */
 }
 
 /* Global styles */
