@@ -6,13 +6,18 @@
 <head>
     <title>{{ course.course_name }}</title>
 </head>
+
 <body>
     <h1>{{ course.course_name }}</h1>
-    <p>Course Code: {{ course.course_code }}</p>
-    <p>Department: {{ course.department }}</p>
-    <p>Description: {{ course.description }}</p>
-    <p>Credits: {{ course.credits }}</p>
-    <a href="{% url 'course_list' %}">Back to Courses</a>
+    <div class="container">
+        <p>Course Code: {{ course.course_code }}</p>
+        <p>Department: {{ course.department }}</p>
+        <p>Description: {{ course.description }}</p>
+        <p>Credits: {{ course.credits }}</p>
+        <a href="{% url 'course_list' %}">Back to Courses</a>
+    </div><br>
+
 </body>
+
 </html>
 {% endblock %}

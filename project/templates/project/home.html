@@ -1,22 +1,26 @@
 {% extends "project/base.html" %}
 
 {% block content %}
-<h1>BU CourseRoad</h1>
-
-{% if user.is_authenticated %}
-    <p>Welcome, {{ user.username }}!</p>
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+<h1>BU <span class="italic-text">CourseRoad ⛕</span></h1>
+    <!-- Welcome Section -->
+    {% if user.is_authenticated %}
+    <div class="welcome-container">
+        <h3>Glad you're here, {{ user.username }}!</h3>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+    </div>
 
     <!-- Profile Editing Section -->
-    <h2>Edit Your Profile</h2>
-    <form method="post" action="{% url 'home_page' %}">
-        {% csrf_token %}
-        {{ edit_profile_form.as_p }}
-        <button type="submit" name="edit_profile">Save Changes</button>
-    </form>
+    <div class="container">
+        <h2>Edit Your Profile ✍🏼</h2>
+        <form method="post" action="{% url 'home_page' %}">
+            {% csrf_token %}
+            {{ edit_profile_form.as_p }}
+            <button type="submit" name="edit_profile">Save Changes</button>
+        </form>
+    </div><br>
 
     <!-- Display profile update messages -->
     {% if messages %}
@@ -29,41 +33,45 @@
         {% endfor %}
     {% endif %}
 
-    <!-- Academic Tracks Section -->
-    <h2>Your Academic Tracks</h2>
-    <!-- Display academic track-related messages -->
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags == "track_success" %}
-                <div class="alert alert-success">{{ message }}</div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-    
-    <ul>
-        {% for track in academic_tracks %}
-            <li>
-                {{ track.year }}
-                <!-- Edit Button -->
-                <a href="{% url 'edit_academic_track_course' track.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                <!-- Delete Button -->
-                <form method="post" action="{% url 'delete_academic_track' pk=track.pk %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </li>
-        {% empty %}
-            <p>You don't have any academic tracks yet.</p>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <!-- Academic Tracks Section -->
+        <h2>Your Academic Tracks 📚</h2>
+        <!-- Display academic track-related messages -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "track_success" %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        
+        <ul>
+            {% for track in academic_tracks %}
+                <li>
+                    {{ track.year }}
+                    <!-- Edit Button -->
+                    <a href="{% url 'edit_academic_track_course' track.pk %}" class="btn btn-primary btn-sm">Edit</a>
+                    <!-- Delete Button -->
+                    <form method="post" action="{% url 'delete_academic_track' pk=track.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </li>
+            {% empty %}
+                <p>You don't have any academic tracks yet.</p>
+            {% endfor %}
+        </ul>
+    </div><br>
 
-    <!-- Add Academic Track -->
-    <h3>Add an Academic Track</h3>
-    <form method="post" action="{% url 'home_page' %}">
-        {% csrf_token %}
-        {{ academic_track_form.as_p }}
-        <button type="submit" name="add_academic_track" class="btn btn-success">Add Track</button>
-    </form>
+    <div class="container">
+        <!-- Add Academic Track -->
+        <h2>Add an Academic Track  📝</h2>
+        <form method="post" action="{% url 'home_page' %}">
+            {% csrf_token %}
+            {{ academic_track_form.as_p }}
+            <button type="submit" name="add_academic_track" class="btn btn-success">Add Track</button>
+        </form>
+    </div><br>
 
 {% else %}
     <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>

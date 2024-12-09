@@ -8,11 +8,16 @@
     <title>{{ user.username }}</title>
 </head>
 <body>
-    <h1>{{ user.username }}</h1>
-    <p>Email: {{ user.email }}</p>
-    <p>Major: {{ user.major }}</p>
-    <p>Year of Graduation: {{ user.year_of_graduation }}</p>
+    <h1>{{ user.username }} 🐾</h1>
+    <!-- User Details  -->
+    <div class="container">
+        <p>Email: {{ user.email }}</p>
+        <p>Major: {{ user.major }}</p>
+        <p>Year of Graduation: {{ user.year_of_graduation }}</p>
+    </div><br>
 
+    <!-- User Academic Track  -->
+    <div class="container">
     {% if user.academictrack_set.first %}
     <a href="{% url 'academictrack_detail' pk=user.academictrack_set.first.id %}">
         View Academic Track for {{ user.username }}
@@ -21,8 +26,9 @@
         <p>{{ user.username }} does not have an Academic Track.</p>
     {% endif %}
 
-
     <a href="{% url 'user_list' %}">Back to User List</a>
+    </div>
+
 </body>
 </html>
 {% endblock %}

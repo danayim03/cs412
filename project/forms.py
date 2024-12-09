@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import CustomUser, AcademicTrack, AcademicTrackCourse, ClassReview
 
+# Form for user registration with custom fields and placeholder customization for year of graduation.
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
@@ -11,21 +12,29 @@ class CustomUserCreationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['year_of_graduation'].widget.attrs.update({'placeholder': 'YYYY-MM-DD'})
 
+
+# Form for editing user profile, using the same fields as CustomUser.
 class EditProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'major', 'year_of_graduation')
 
+
+# Form for creating or editing an academic track, with a field for the year.
 class AcademicTrackForm(forms.ModelForm):
     class Meta:
         model = AcademicTrack
         fields = ('year',)
 
+
+# Form for creating or editing an academic track course, including the academic track, course, semester, and year taken.
 class AcademicTrackCourseForm(forms.ModelForm):
     class Meta:
         model = AcademicTrackCourse
         fields = ['academic_track', 'course', 'semester', 'year_taken']
 
+
+# Form for submitting a class review, with fields for course, rating, difficulty, review text, and recommendation.
 class ClassReviewForm(forms.ModelForm):
     class Meta:
         model = ClassReview

@@ -1,8 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;700&display=swap');
+
+/* Regular weight */
+@font-face {
+    font-family: 'Clash Grotesk';
+    src: url('/static/fonts/ClashGrotesk-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Bold weight */
+@font-face {
+    font-family: 'Clash Grotesk';
+    src: url('/static/fonts/ClashGrotesk-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+
+.italic-text {
+    font-style: italic;
+}
+
 /* Global styles */
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Matches BU's style */
+    font-family: 'Clash Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin-left: 20px;
-    margin-right: 20px;    padding: 0;
+    margin-right: 20px;
+    padding: 0;
     background-color: #ffffff;
     color: #000000;
 }
@@ -12,6 +35,7 @@ body {
     background-color: #CC0000; /* BU's official red */
     padding: 15px 20px;
     text-align: center;
+    border-radius: 15px 15px 0 0; /* Round top-left and top-right corners only */
 }
 
 .nav-links a {
@@ -19,22 +43,22 @@ body {
     text-decoration: none;
     font-size: 18px;
     margin: 0 15px;
-    font-weight: bold;
+    font-weight: normal;
     letter-spacing: 0.5px;
     transition: color 0.3s;
 }
 
 .nav-links a:hover {
-    color: #000000; /* Add a gold hover effect for contrast */
+    color: #000000;
 }
 
 /* Buttons */
 button, .btn {
-    background-color: #CC0000;
+    background-color: black;
     color: #ffffff;
     border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
+    padding: 8px 8px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s;
@@ -67,11 +91,29 @@ form button {
 }
 
 /* Page Titles */
-h1, h2 {
-    font-weight: bold;
+h1 {
+    font-weight: normal;
     color: #CC0000; /* BU Red */
     text-align: center;
     margin: 20px 0;
+}
+
+h2 {
+    font-weight: normal;
+    color: black; 
+    text-align: center;
+    margin: 20px 0;
+}
+
+h3{
+    font-weight: normal;
+    color: black; 
+    margin-top: 20px;
+}
+
+h4 {
+    font-weight: normal;
+    color: black; 
 }
 
 /* Lists */
@@ -90,12 +132,12 @@ li {
 li a {
     color: #CC0000;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: normal;
     transition: color 0.3s;
 }
 
 li a:hover {
-    color: #CC0000; /* Darker red */
+    color: black;
 }
 
 /* Footer */
@@ -145,6 +187,27 @@ input[type="search"]:focus {
 }
 
 button[type="submit"] {
-    padding: 10px 15px;
+    padding: 8px 8px;
     margin-left: 10px;
 }
+
+.container {
+    max-width: 600px; /* Set the maximum width of the container */
+    margin: 0 auto;   /* Center the container horizontally */
+    padding: 20px;    /* Add padding for better spacing */
+    border: 1px solid #dddddd; /* Optional: Add a border */
+    border-radius: 8px; /* Optional: Add rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+    background-color: #ffffff; /* Optional: Background color */
+}
+
+.welcome-container {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    justify-content: space-between; /* Add space between the welcome message and button */
+    max-width: 600px; /* Optional: Limit the width */
+    margin: 0 auto; /* Center the container horizontally */
+    padding-top: 10px;
+}
+
+

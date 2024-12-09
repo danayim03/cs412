@@ -3,19 +3,24 @@
 {% block title %}User List{% endblock %}
 
 {% block content %}
-<h1>User List</h1>
+<h1>User List 🐾</h1>
 
 <!-- Search Bar for usernames -->
-<form action="{% url 'user_list' %}" method="GET">
-    <input type="search" name="user_search" placeholder="Search a username." aria-label="Search">
-    <button type="submit">Search</button>
-</form>
+<div class="container">
+    <form action="{% url 'user_list' %}" method="GET">
+        <input type="search" name="user_search" placeholder="Search a username." aria-label="Search">
+        <button type="submit">Search</button>
+    </form>
+</div><br>
 
-<ul>
-    {% for user in users %}
-        <li>
-            <a href="{% url 'user_detail' pk=user.id %}">{{ user.username }}</a> - {{ user.major }}
-        </li>
-    {% endfor %}
-</ul>
-{% endblock %}
+<div class="container">
+    <ul>
+        {% for user in users %}
+            <li>
+                <a href="{% url 'user_detail' pk=user.id %}">{{ user.username }}</a> - {{ user.major }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endblock %}
+</div>
+

@@ -2,9 +2,10 @@
 
 {% block content %}
 <div class="container">
-    <h2>{{ user.username }}'s {{ academic_track.year }} Track Courses</h2>
+    <h1>{{ user.username }}'s {{ academic_track.year }} Track Courses</h1>
 
     <!-- Display existing courses -->
+    <div class="container">
     <ul>
         {% for course in courses %}
         <li>
@@ -18,10 +19,10 @@
             <li>No courses have been added to this track yet.</li>
         {% endfor %}
     </ul>
-
-    <hr>
+    </div><br>
 
     <!-- Add course form -->
+    <div class="container">
     <h2>Add Course to {{ academic_track.year }} Track</h2>
 
     <form method="post">
@@ -30,9 +31,11 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'academictrack_detail' academic_track.pk %}" class="btn btn-link">Back to Academic Track</a>
+
         </div>
     </form>
-
-    <a href="{% url 'academictrack_detail' academic_track.pk %}" class="btn btn-link">Back to Academic Track</a>
+    </div><br>
 </div>
 {% endblock %}
+

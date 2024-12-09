@@ -5,11 +5,9 @@ from django.db.models import Q
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from .models import CustomUser, Course, AcademicTrack, AcademicTrackCourse, ClassReview
-from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, AcademicTrackCourseForm, ClassReviewForm
+from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, ClassReviewForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.urls import reverse, reverse_lazy
-
 
 # Home Page View
 class HomePageView(TemplateView):
@@ -20,29 +18,23 @@ class HomePageView(TemplateView):
         if not request.user.is_authenticated:
             return redirect(reverse_lazy('login'))
         return super().dispatch(request, *args, **kwargs)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
-
-        # Add the profile edit form, pre-filled with current user data
         context['edit_profile_form'] = EditProfileForm(instance=user)
-        # Add the academic track form
         context['academic_track_form'] = AcademicTrackForm()
-        # Get academic tracks for the user
         context['academic_tracks'] = AcademicTrack.objects.filter(user=user)
         return context
 
     def post(self, request, *args, **kwargs):
-        # Handle profile editing
         if 'edit_profile' in request.POST:
             profile_form = EditProfileForm(request.POST, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.add_message(request, messages.SUCCESS, 'Profile updated successfully.', extra_tags='profile_success')
+                messages.success(request, 'Profile updated successfully.', extra_tags='profile_success')
             else:
-                messages.add_message(request, messages.ERROR, 'Error updating profile.', extra_tags='profile_error')
-        # Handle academic track addition
+                messages.error(request, 'Error updating profile.', extra_tags='profile_error')
         elif 'add_academic_track' in request.POST:
             track_form = AcademicTrackForm(request.POST)
             if track_form.is_valid():
@@ -52,96 +44,84 @@ class HomePageView(TemplateView):
                 messages.success(request, 'Academic track added successfully.')
             else:
                 messages.error(request, 'Error adding academic track.')
-        return redirect('home_page')  # Replace 'home' with the correct home page URL name
+        return redirect('home_page')
 
+# View for deleting an academic track
 class DeleteAcademicTrackView(View):
     def post(self, request, *args, **kwargs):
-        track_id = kwargs.get('pk')
-        track = get_object_or_404(AcademicTrack, pk=track_id, user=request.user)
-        
-        # Delete the track
+        track = get_object_or_404(AcademicTrack, pk=kwargs.get('pk'), user=request.user)
         track.delete()
-
-        # Add a success message
-        messages.add_message(request, messages.SUCCESS, 'Academic track deleted successfully.', extra_tags='track_success')
-        
-        # Redirect back to the home page
+        messages.success(request, 'Academic track deleted successfully.', extra_tags='track_success')
         return redirect('home_page')
-    
-# Login View
+
+# Custom login view
 class CustomLoginView(LoginView):
     template_name = 'project/login.html'
 
-# Sign-Up View
+# Sign-up view for new users
 def signup_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)  # Correctly use CustomUserCreationForm
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Account created successfully. Please log in.')
-            return redirect('login')  # Redirect to the login page
+            return redirect('login')
     else:
         form = CustomUserCreationForm()
     return render(request, 'project/signup.html', {'form': form})
 
-# User Views
+# View for listing users with a search filter
 class UserListView(ListView):
-    model = CustomUser  # Use CustomUser instead of the default User model
+    model = CustomUser
     template_name = 'project/user_list.html'
     context_object_name = 'users'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         search_query = self.request.GET.get('user_search', '')
+        queryset = super().get_queryset()
         if search_query:
-            queryset = queryset.filter(
-                Q(username__icontains=search_query)
-            )
+            queryset = queryset.filter(username__icontains=search_query)
         return queryset
 
-
+# Detailed view for a user's profile
 class UserDetailView(DetailView):
     model = CustomUser
     template_name = 'project/user_detail.html'
     context_object_name = 'user'
 
-
-# Course Views
+# View for listing courses with a search filter
 class CourseListView(ListView):
     model = Course
     template_name = 'project/course_list.html'
     context_object_name = 'courses'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         search_query = self.request.GET.get('class_search', '')
+        queryset = super().get_queryset()
         if search_query:
-            queryset = queryset.filter(
-                Q(course_name__icontains=search_query)
-            )
+            queryset = queryset.filter(course_name__icontains=search_query)
         return queryset
 
-
+# Detailed view for a course
 class CourseDetailView(DetailView):
     model = Course
     template_name = 'project/course_detail.html'
     context_object_name = 'course'
 
-
-# Academic Track Views
+# View for listing academic tracks with a user search filter
 class AcademicTrackListView(ListView):
     model = AcademicTrack
     template_name = 'project/academictrack_list.html'
     context_object_name = 'academic_tracks'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         search_query = self.request.GET.get('user_search', '')
+        queryset = super().get_queryset()
         if search_query:
             queryset = queryset.filter(user__username__icontains=search_query)
         return queryset
 
-# Add AcademicTrackCourse View
+# View for creating an academic track course
 class AcademicTrackCourseCreateView(CreateView):
     model = AcademicTrackCourse
     template_name = 'project/edit_academic_track_course.html'
@@ -150,9 +130,8 @@ class AcademicTrackCourseCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         academic_track = get_object_or_404(AcademicTrack, pk=self.kwargs['pk'])
-        courses = AcademicTrackCourse.objects.filter(academic_track=academic_track).select_related('course')
         context['academic_track'] = academic_track
-        context['courses'] = courses
+        context['courses'] = AcademicTrackCourse.objects.filter(academic_track=academic_track).select_related('course')
         return context
 
     def form_valid(self, form):
@@ -162,27 +141,22 @@ class AcademicTrackCourseCreateView(CreateView):
 
     def get_success_url(self):
         return reverse('edit_academic_track_course', kwargs={'pk': self.kwargs['pk']})
-    
+
+# Detailed view for an academic track, grouped by year and semester
 class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
     model = AcademicTrack
     template_name = 'project/academictrack_detail.html'
     context_object_name = 'academic_track'
 
     def get_object(self, queryset=None):
-        # Allow access to any academic track, regardless of the logged-in user
         try:
-            track = super().get_object(queryset)
-            return track
+            return super().get_object(queryset)
         except AcademicTrack.DoesNotExist:
             raise Http404("No academic track found matching the query")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Retrieve all tracks for the user who owns this academic track
-        user_tracks = AcademicTrack.objects.filter(user=self.object.user).order_by('year')
-        context['user_tracks'] = user_tracks
-
-        # Group courses for the current track by year and semester
+        context['user_tracks'] = AcademicTrack.objects.filter(user=self.object.user).order_by('year')
         courses = AcademicTrackCourse.objects.filter(academic_track=self.object).order_by('year_taken', 'semester')
         grouped_classes = {}
         for course in courses:
@@ -190,21 +164,19 @@ class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
             if year_semester not in grouped_classes:
                 grouped_classes[year_semester] = []
             grouped_classes[year_semester].append(course)
-
         context['grouped_classes'] = grouped_classes
         return context
 
-    
+# View for deleting an academic track course
 class DeleteAcademicTrackCourseView(View):
     def post(self, request, *args, **kwargs):
-        course_id = self.kwargs['course_id']
-        course = get_object_or_404(AcademicTrackCourse, id=course_id)
+        course = get_object_or_404(AcademicTrackCourse, id=kwargs['course_id'])
         academic_track_id = course.academic_track.id
         course.delete()
         messages.success(request, 'Course successfully deleted.')
         return redirect('edit_academic_track_course', pk=academic_track_id)
 
-
+# View for listing academic tracks by year
 class AcademicTrackYearView(ListView):
     model = AcademicTrack
     template_name = 'project/academictrack_year.html'
@@ -213,25 +185,21 @@ class AcademicTrackYearView(ListView):
     def get_queryset(self):
         return AcademicTrack.objects.filter(year=self.kwargs['year'])
 
-
-# Class Review Views
+# View for listing class reviews and handling review submission
 class ClassReviewListView(ListView):
     model = ClassReview
     template_name = 'project/classreview_list.html'
     context_object_name = 'class_reviews'
 
     def get_queryset(self):
+        search_query = self.request.GET.get('class_search', '').strip()
         queryset = super().get_queryset()
-        search_query = self.request.GET.get('class_search', '').strip()  # Get the search query
         if search_query:
-            queryset = queryset.filter(
-                Q(course__course_name__icontains=search_query)  # Filter by course name
-            )
+            queryset = queryset.filter(course__course_name__icontains=search_query)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Pass all courses for the review form
         context['form'] = ClassReviewForm()
         return context
 
@@ -240,7 +208,7 @@ class ClassReviewListView(ListView):
             form = ClassReviewForm(request.POST)
             if form.is_valid():
                 review = form.save(commit=False)
-                review.author = request.user  # Automatically set the author
+                review.author = request.user  # Set the author as the logged-in user
                 review.save()
                 messages.success(request, "Your review has been submitted.")
             else:
@@ -249,7 +217,7 @@ class ClassReviewListView(ListView):
             messages.error(request, "You must be logged in to submit a review.")
         return HttpResponseRedirect(request.path_info)
 
-
+# Detailed view for a class review
 class ClassReviewDetailView(DetailView):
     model = ClassReview
     template_name = 'project/classreview_detail.html'
