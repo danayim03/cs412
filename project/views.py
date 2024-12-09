@@ -143,10 +143,16 @@ class AcademicTrackCourseCreateView(CreateView):
         return reverse('edit_academic_track_course', kwargs={'pk': self.kwargs['pk']})
 
 # Detailed view for an academic track, grouped by year and semester
-class AcademicTrackDetailView(LoginRequiredMixin, DetailView):
+class AcademicTrackDetailView(DetailView):
     model = AcademicTrack
     template_name = 'project/academictrack_detail.html'
     context_object_name = 'academic_track'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Redirect to login if user is not authenticated
+        if not request.user.is_authenticated:
+            return redirect(reverse_lazy('login'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         try:
