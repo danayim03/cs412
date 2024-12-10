@@ -1,13 +1,10 @@
-from django.http import Http404, HttpResponseRedirect
+from django.http.response import HttpResponse as HttpResponse
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Q
 from django.contrib.auth.views import LoginView
-from django.contrib import messages
-from .models import CustomUser, Course, AcademicTrack, AcademicTrackCourse, ClassReview
-from .forms import CustomUserCreationForm, EditProfileForm, AcademicTrackForm, ClassReviewForm
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse, reverse_lazy
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from .models import *
+from .forms import *
 
 # Home Page View
 class HomePageView(TemplateView):
@@ -16,7 +13,7 @@ class HomePageView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         # Redirect to login if user is not authenticated
         if not request.user.is_authenticated:
-            return redirect(reverse_lazy('login'))
+            return redirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -28,30 +25,39 @@ class HomePageView(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        context = {}
         if 'edit_profile' in request.POST:
             profile_form = EditProfileForm(request.POST, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, 'Profile updated successfully.', extra_tags='profile_success')
+                context['profile_status'] = 'Profile updated successfully.'
             else:
-                messages.error(request, 'Error updating profile.', extra_tags='profile_error')
+                context['profile_status'] = 'Error updating profile.'
         elif 'add_academic_track' in request.POST:
             track_form = AcademicTrackForm(request.POST)
             if track_form.is_valid():
                 new_track = track_form.save(commit=False)
                 new_track.user = request.user  # Link to the logged-in user
                 new_track.save()
-                messages.success(request, 'Academic track added successfully.')
+                context['track_status'] = 'Academic track added successfully.'
             else:
-                messages.error(request, 'Error adding academic track.')
+                context['track_status'] = 'Error adding academic track.'
         return redirect('home_page')
 
 # View for deleting an academic track
 class DeleteAcademicTrackView(View):
     def post(self, request, *args, **kwargs):
-        track = get_object_or_404(AcademicTrack, pk=kwargs.get('pk'), user=request.user)
+        try:
+            # Query the AcademicTrack using pk and user
+            track = AcademicTrack.objects.get(pk=kwargs.get('pk'), user=request.user)
+        except AcademicTrack.DoesNotExist:
+            # If not found, raise exception
+            raise Exception("Academic track not found.")
+
+        # Delete the object
         track.delete()
-        messages.success(request, 'Academic track deleted successfully.', extra_tags='track_success')
+
+        # Redirect to the home page
         return redirect('home_page')
 
 # Custom login view
@@ -60,12 +66,16 @@ class CustomLoginView(LoginView):
 
 # Sign-up view for new users
 def signup_view(request):
+    context = {}
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Account created successfully. Please log in.')
+            context['signup_status'] = 'Account created successfully. Please log in.'
             return redirect('login')
+        else:
+            context['signup_status'] = 'Error creating account.'
+
     else:
         form = CustomUserCreationForm()
     return render(request, 'project/signup.html', {'form': form})
@@ -129,19 +139,34 @@ class AcademicTrackCourseCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        academic_track = get_object_or_404(AcademicTrack, pk=self.kwargs['pk'])
+        try:
+            # Query the AcademicTrack object manually
+            academic_track = AcademicTrack.objects.get(pk=self.kwargs['pk'])
+        except AcademicTrack.DoesNotExist:
+            # Raise exception if the AcademicTrack does not exist
+            raise Exception("Academic track not found.")
+        
+        # Add the academic track and related courses to the context
         context['academic_track'] = academic_track
         context['courses'] = AcademicTrackCourse.objects.filter(academic_track=academic_track).select_related('course')
         return context
 
     def form_valid(self, form):
-        academic_track = get_object_or_404(AcademicTrack, pk=self.kwargs['pk'])
+        try:
+            # Query the AcademicTrack object manually
+            academic_track = AcademicTrack.objects.get(pk=self.kwargs['pk'])
+        except AcademicTrack.DoesNotExist:
+            # Raise exception if the AcademicTrack does not exist
+            raise Exception("Academic track not found.")
+        
+        # Attach the academic track to the form instance
         form.instance.academic_track = academic_track
         return super().form_valid(form)
 
     def get_success_url(self):
+        # Redirect to the edit page for the current academic track
         return reverse('edit_academic_track_course', kwargs={'pk': self.kwargs['pk']})
-
+    
 # Detailed view for an academic track, grouped by year and semester
 class AcademicTrackDetailView(DetailView):
     model = AcademicTrack
@@ -151,14 +176,14 @@ class AcademicTrackDetailView(DetailView):
     def dispatch(self, request, *args, **kwargs):
         # Redirect to login if user is not authenticated
         if not request.user.is_authenticated:
-            return redirect(reverse_lazy('login'))
+            return redirect(reverse('login'))
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         try:
             return super().get_object(queryset)
         except AcademicTrack.DoesNotExist:
-            raise Http404("No academic track found matching the query")
+            raise Exception("No academic track found matching the query")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -176,10 +201,20 @@ class AcademicTrackDetailView(DetailView):
 # View for deleting an academic track course
 class DeleteAcademicTrackCourseView(View):
     def post(self, request, *args, **kwargs):
-        course = get_object_or_404(AcademicTrackCourse, id=kwargs['course_id'])
+        try:
+            # Query the AcademicTrackCourse object manually
+            course = AcademicTrackCourse.objects.get(id=kwargs['course_id'])
+        except AcademicTrackCourse.DoesNotExist:
+            # Raise exception if the AcademicTrackCourse does not exist
+            raise Exception("Course not found.")
+        
+        # Get the associated academic track ID before deletion
         academic_track_id = course.academic_track.id
+        
+        # Delete the course
         course.delete()
-        messages.success(request, 'Course successfully deleted.')
+        
+        # Redirect to the edit page for the academic track
         return redirect('edit_academic_track_course', pk=academic_track_id)
 
 # View for listing academic tracks by year
@@ -210,18 +245,21 @@ class ClassReviewListView(ListView):
         return context
 
     def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+
+        context = self.get_context_data()
         if request.user.is_authenticated:
             form = ClassReviewForm(request.POST)
             if form.is_valid():
                 review = form.save(commit=False)
                 review.author = request.user  # Set the author as the logged-in user
                 review.save()
-                messages.success(request, "Your review has been submitted.")
+                context['status'] = "Your review has been submitted successfully."
             else:
-                messages.error(request, "There was an error with your submission.")
+                context['status'] = "There was an error with your submission. Please check the form and try again."
         else:
-            messages.error(request, "You must be logged in to submit a review.")
-        return HttpResponseRedirect(request.path_info)
+            context['status'] = "You must be logged in to submit a review."
+        return self.render_to_response(context)
 
 # Detailed view for a class review
 class ClassReviewDetailView(DetailView):
