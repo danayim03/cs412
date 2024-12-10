@@ -1,3 +1,9 @@
+/*
+Font: Clash Grotesk
+Downloaded from an external source:
+https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;700&display=swap
+*/
+
 @import url('https://fonts.googleapis.com/css2?family=Clash+Grotesk:wght@400;700&display=swap');
 
 /* Regular weight */
@@ -16,24 +22,8 @@
     font-style: normal;
 }
 
-.heading-container {
-    display: flex;
-    justify-content: center; /* Centers horizontally */
-    align-items: center; /* Centers vertically, if needed */
-    height: 100%; /* Adjust this for your specific layout */
-    text-align: left; /* Keeps the text aligned left */
-}
-
-.heading {
-    display: inline-block; /* Shrinks to fit content */
-}
-
-.italic-text {
-    font-size: 2em; /* Makes the second part of the text larger */
-    font-style: italic; /* Adds italic style */
-}
-
-/* Global styles */
+/* GLOBAL STYLES */
+/* Body styling for global layout */
 body {
     font-family: 'Clash Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     margin-left: 20px;
@@ -43,7 +33,34 @@ body {
     color: #000000;
 }
 
-/* Header Navigation */
+/* Page Titles */
+h1 {
+    font-weight: normal;
+    color: #CC0000; /* BU Red */
+    text-align: center;
+    margin: 20px 0;
+}
+
+h2 {
+    font-weight: normal;
+    color: black;
+    text-align: center;
+    margin: 20px 0;
+}
+
+h3{
+    font-weight: normal;
+    color: black;
+    margin-top: 20px;
+}
+
+h4 {
+    font-weight: normal;
+    color: black;
+}
+
+/* HEADER STYLES */
+/* Header navigation bar */
 .header {
     background-color: #CC0000; /* BU's official red */
     padding: 15px 20px;
@@ -51,6 +68,19 @@ body {
     border-radius: 15px 15px 0 0; /* Round top-left and top-right corners only */
 }
 
+.heading-container {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 100%; /* Set height as full */
+    text-align: left; /* Keeps the text aligned left */
+}
+
+.heading {
+    display: inline-block; /* Shrinks to fit content */
+}
+
+/* Navigation links within the header */
 .nav-links a {
     color: #ffffff; /* White text on red background */
     text-decoration: none;
@@ -65,7 +95,13 @@ body {
     color: #000000;
 }
 
-/* Buttons */
+.italic-text {
+    font-size: 2em; /* Makes the second part of the text larger */
+    font-style: italic; /* Adds italic style */
+}
+
+/* BUTTONS */
+/* General button styling */
 button, .btn {
     background-color: black;
     color: #ffffff;
@@ -74,22 +110,24 @@ button, .btn {
     border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s; /* Smooth hovering effect */
 }
 
 button:hover, .btn:hover {
-    background-color: #CC0000; /* Darker red for hover */
+    background-color: #CC0000; /* Red on hover */
 }
 
+/* Danger button styling */
 .btn-danger {
-    background-color: #CC0000; /* Danger button style */
+    background-color: #CC0000;
 }
 
 .btn-danger:hover {
     background-color: #CC0000;
 }
 
-/* Forms */
+/* FORMS */
+/* Input, textarea, and select styling */
 form input, form textarea, form select {
     width: 100%;
     padding: 8px;
@@ -103,35 +141,10 @@ form button {
     margin-top: 10px;
 }
 
-/* Page Titles */
-h1 {
-    font-weight: normal;
-    color: #CC0000; /* BU Red */
-    text-align: center;
-    margin: 20px 0;
-}
-
-h2 {
-    font-weight: normal;
-    color: black; 
-    text-align: center;
-    margin: 20px 0;
-}
-
-h3{
-    font-weight: normal;
-    color: black; 
-    margin-top: 20px;
-}
-
-h4 {
-    font-weight: normal;
-    color: black; 
-}
-
-/* Lists */
+/* LISTS */
+/* General unordered list styling */
 ul {
-    list-style-type: none;
+    list-style-type: none; /* Removes default list styling */
     padding: 0;
 }
 
@@ -142,8 +155,9 @@ li {
     border-radius: 4px;
 }
 
+/* Links inside list items */
 li a {
-    color: #CC0000;
+    color: #CC0000; /* BU Red */
     text-decoration: none;
     font-weight: normal;
     transition: color 0.3s;
@@ -153,7 +167,8 @@ li a:hover {
     color: black;
 }
 
-/* Footer */
+/* FOOTER STYLES */
+/* Footer container */
 .footer {
     background-color: #f7f7f7;
     text-align: center;
@@ -162,8 +177,9 @@ li a:hover {
     margin-top: 20px;
 }
 
+/* Links within the footer */
 .footer a {
-    color: #CC0000;
+    color: #CC0000; /* BU Red */
     text-decoration: none;
 }
 
@@ -204,22 +220,25 @@ button[type="submit"] {
     margin-left: 10px;
 }
 
+/* CONTAINERS */
+/* General container for sections */
 .container {
-    max-width: 600px; /* Set the maximum width of the container */
-    margin: 0 auto;   /* Center the container horizontally */
-    padding: 20px;    /* Add padding for better spacing */
-    border: 1px solid #dddddd; /* Optional: Add a border */
-    border-radius: 8px; /* Optional: Add rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
-    background-color: #ffffff; /* Optional: Background color */
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
 }
 
+/* Welcome message container */
 .welcome-container {
     display: flex;
-    align-items: center; /* Vertically align items */
-    justify-content: space-between; /* Add space between the welcome message and button */
-    max-width: 600px; /* Optional: Limit the width */
-    margin: 0 auto; /* Center the container horizontally */
+    align-items: center;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto;
     padding-top: 10px;
 }
 
