@@ -9,9 +9,11 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'email', 'major', 'year_of_graduation')
 
     def __init__(self, *args, **kwargs):
+        # Initialize the form by calling the parent class's __init__ method.
         super().__init__(*args, **kwargs)
+        # Update the 'year_of_graduation' field's widget attributes to include a placeholder.
+        # Source for placeholder: Django Widgets Documentation (Django Form Fields)
         self.fields['year_of_graduation'].widget.attrs.update({'placeholder': 'YYYY-MM-DD'})
-
 
 # Form for editing user profile, using the same fields as CustomUser.
 class EditProfileForm(forms.ModelForm):
@@ -19,13 +21,11 @@ class EditProfileForm(forms.ModelForm):
         model = CustomUser
         fields = ('username', 'email', 'major', 'year_of_graduation')
 
-
 # Form for creating or editing an academic track, with a field for the year.
 class AcademicTrackForm(forms.ModelForm):
     class Meta:
         model = AcademicTrack
         fields = ('year',)
-
 
 # Form for creating or editing an academic track course, including the academic track, course, semester, and year taken.
 class AcademicTrackCourseForm(forms.ModelForm):
@@ -33,12 +33,13 @@ class AcademicTrackCourseForm(forms.ModelForm):
         model = AcademicTrackCourse
         fields = ['academic_track', 'course', 'semester', 'year_taken']
 
-
 # Form for submitting a class review, with fields for course, rating, difficulty, review text, and recommendation.
 class ClassReviewForm(forms.ModelForm):
     class Meta:
         model = ClassReview
         fields = ['course', 'rating', 'difficulty', 'review_text', 'recommend_to_take']
+        # Customizing the widgets for the form fields
+        # Source: Customizing Widget Instances (Django Form and Field Validation)
         widgets = {
             'course': forms.Select(attrs={'class': 'form-control'}),
             'rating': forms.Select(attrs={'class': 'form-control'}),
