@@ -1,20 +1,7 @@
 from django.urls import path
-from . import views
-from .views import (
-    DeleteAcademicTrackView, 
-    AcademicTrackCourseCreateView, 
-    AcademicTrackDetailView, 
-    HomePageView, 
-    CustomLoginView, 
-    UserListView, 
-    UserDetailView, 
-    CourseListView, 
-    CourseDetailView, 
-    AcademicTrackListView, 
-    DeleteAcademicTrackCourseView,
-    ClassReviewListView,
-)
 from django.contrib.auth.views import LogoutView
+from . import views
+from .views import *
 
 urlpatterns = [
     # Homepage
@@ -34,12 +21,12 @@ urlpatterns = [
     path('courses/', CourseListView.as_view(), name='course_list'),
     path('courses/<int:pk>/', CourseDetailView.as_view(), name='course_detail'),
 
-    # Academic Track routes
+    # Academic track routes
     path('academictracks/', AcademicTrackListView.as_view(), name='academictrack_list'),
     path('academictracks/<int:pk>/', AcademicTrackDetailView.as_view(), name='academictrack_detail'),
     path('academictracks/<int:pk>/edit/', AcademicTrackCourseCreateView.as_view(), name='edit_academic_track_course'),
     path('academictracks/<int:pk>/delete-course/<int:course_id>/', DeleteAcademicTrackCourseView.as_view(), name='delete_academic_track_course'),
 
-    # Class Review routes
+    # Class review routes
     path('classreviews/', ClassReviewListView.as_view(), name='classreview_list'),
 ]
