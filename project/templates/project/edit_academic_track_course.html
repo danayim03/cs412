@@ -11,7 +11,7 @@
         <ul>
             {% for course in courses %}
             <li>
-                {{ course.course.course_name }} ({{ course.semester }} {{ course.year_taken }})
+                {{ course.course.course_code }} - {{ course.course.course_name }} ({{ course.semester }} {{ course.year_taken }})
                 <!-- Deleting a specific course from a specific academic track -->
                 <!-- Source for styling: W3Schools CSS Display Property -->
                 <form method="post" action="{% url 'delete_academic_track_course' pk=academic_track.pk course_id=course.id %}" style="display:inline;">
