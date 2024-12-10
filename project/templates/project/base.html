@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Web application title section -->
     <title>{% block title %}BU CourseRoad{% endblock %}</title>
     {% load static %}
+    <!-- Applying the css styling defined in the file 'project.css' -->
     <link rel="stylesheet" href="{% static 'css/project.css' %}">
 </head>
 <body>
-    <!-- Header Section -->
+    <!-- Navigation bar menu -->
     <div class="header">
         <div class="nav-links">
             <a href="{% url 'home_page' %}">Home</a>
@@ -17,7 +19,7 @@
         </div>
     </div>
     
-    <!-- Main Content Section -->
+    <!-- Main content section for each page -->
     <div>
         {% block content %}{% endblock %}
     </div>

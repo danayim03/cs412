@@ -2,39 +2,42 @@
 
 {% block content %}
 <div class="container">
+    <!-- Title of the specific user's academic track page -->
     <h1>{{ user.username }}'s {{ academic_track.year }} Track Courses</h1>
-
-    <!-- Display existing courses -->
+    
+    <!-- "container" = css styling for each sections -->
     <div class="container">
-    <ul>
-        {% for course in courses %}
-        <li>
-            {{ course.course.course_name }} ({{ course.semester }} {{ course.year_taken }})
-            <form method="post" action="{% url 'delete_academic_track_course' pk=academic_track.pk course_id=course.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-            </form>
-        </li>
-        {% empty %}
-            <li>No courses have been added to this track yet.</li>
-        {% endfor %}
-    </ul>
+        <!-- Displaying existing courses (meaning courses the user added to their track) -->
+        <ul>
+            {% for course in courses %}
+            <li>
+                {{ course.course.course_name }} ({{ course.semester }} {{ course.year_taken }})
+                <!-- Deleting a specific course from a specific academic track -->
+                <!-- Source for styling: W3Schools CSS Display Property -->
+                <form method="post" action="{% url 'delete_academic_track_course' pk=academic_track.pk course_id=course.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </li>
+            <!-- If the user has not added any courses to the track, then show the following -->
+            {% empty %}
+                <li>No courses have been added to this track yet.</li>
+            {% endfor %}
+        </ul>
     </div><br>
 
-    <!-- Add course form -->
+    <!-- "container" = css styling for each sections -->
     <div class="container">
-    <h2>Add Course to {{ academic_track.year }} Track</h2>
-
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-
-        <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{% url 'academictrack_detail' academic_track.pk %}" class="btn btn-link">Back to Academic Track</a>
-
-        </div>
-    </form>
+        <h2>Add Course to {{ academic_track.year }} Track</h2>
+        <!-- Form for adding course -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{% url 'academictrack_detail' academic_track.pk %}" class="btn btn-link">Back to Academic Track</a>
+            </div>
+        </form>
     </div><br>
 </div>
 {% endblock %}

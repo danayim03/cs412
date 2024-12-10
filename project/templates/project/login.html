@@ -1,13 +1,17 @@
 {% extends "project/base.html" %}
 
 {% block content %}
+<!-- Login page -->
 <h2>Login</h2>
 
+<!-- Form submit to login -->
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
 </form>
 
+<!-- A paragraph that explains to user what they should do if they don't have an account yet.
+    Redirection to sign up page included. -->
 <p>Don't have an account? <a href="{% url 'signup' %}">Sign Up</a></p>
 {% endblock %}

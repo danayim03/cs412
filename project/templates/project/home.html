@@ -1,25 +1,30 @@
 {% extends "project/base.html" %}
 
 {% block content %}
+
+<!-- Refer to project.css file for specific styling classes -->
 <div class="heading-container">
     <h1 class="heading">
+        <!-- FYI: '⛕' is an emoji for styling -->
         <span class="italic-text">CourseRoad ⛕</span>
     </h1>
 </div>
 
-<!-- Welcome Section -->
+    <!-- Welcome section -->
     {% if user.is_authenticated %}
     <div class="welcome-container">
         <h3>Glad you're here, {{ user.username }}!</h3>
+        <!-- Logout form -->
         <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit" class="logout-button">Logout</button>
         </form>
     </div>
 
-    <!-- Profile Editing Section -->
+    <!-- Profile editing section -->
     <div class="container">
         <h2>Edit Your Profile ✍🏼</h2>
+        <!-- Edit profile save form -->
         <form method="post" action="{% url 'home_page' %}">
             {% csrf_token %}
             {{ edit_profile_form.as_p }}
@@ -27,49 +32,31 @@
         </form>
     </div><br>
 
-    <!-- Display profile update messages -->
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags == "profile_success" %}
-                <div class="alert alert-success">{{ message }}</div>
-            {% elif message.tags == "profile_error" %}
-                <div class="alert alert-danger">{{ message }}</div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
+    <!-- Academic tracks section -->
     <div class="container">
-        <!-- Academic Tracks Section -->
         <h2>Your Academic Tracks 📚</h2>
-        <!-- Display academic track-related messages -->
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == "track_success" %}
-                    <div class="alert alert-success">{{ message }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-        
         <ul>
             {% for track in academic_tracks %}
                 <li>
                     {{ track.year }}
-                    <!-- Edit Button -->
+                    <!-- Edit button -->
                     <a href="{% url 'edit_academic_track_course' track.pk %}" class="btn btn-primary btn-sm">Edit</a>
-                    <!-- Delete Button -->
+                    <!-- Delete button -->
                     <form method="post" action="{% url 'delete_academic_track' pk=track.pk %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
                 </li>
+            <!-- If user does not have any academic tracks
+            (meaning they haven't submitted a form) then show the following -->
             {% empty %}
                 <p>You don't have any academic tracks yet.</p>
             {% endfor %}
         </ul>
     </div><br>
 
+    <!-- Add academic track section -->
     <div class="container">
-        <!-- Add Academic Track -->
         <h2>Add an Academic Track  📝</h2>
         <form method="post" action="{% url 'home_page' %}">
             {% csrf_token %}
@@ -78,6 +65,8 @@
         </form>
     </div><br>
 
+<!-- Else, if the user is NOT logged in, redirect them to login page,
+    where they can also choose to sign up as a new user -->
 {% else %}
     <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>
 {% endif %}

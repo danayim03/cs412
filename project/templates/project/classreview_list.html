@@ -3,42 +3,46 @@
 {% block title %}Class Reviews{% endblock %}
 
 {% block content %}
+<!-- Title of the class reviews page -->
 <h1>Class Reviews 🐾</h1>
 
-<!-- Search Bar for Class Names -->
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<h2>Search Reviews</h2>
-<form action="{% url 'classreview_list' %}" method="GET">
-    <input type="search" name="class_search" placeholder="Search a class name." aria-label="Search">
-    <button type="submit">Search</button>
-</form>
+    <h2>Search Reviews</h2>
+    <!-- Search bar for class names -->
+    <form action="{% url 'classreview_list' %}" method="GET">
+        <input type="search" name="class_search" placeholder="Search a class name." aria-label="Search">
+        <button type="submit">Search</button>
+    </form>
 </div><br>
 
+<!-- "container" = css styling for each sections -->
 <div class="container">
 <ul>
     {% for review in class_reviews %}
+        <!-- Categories of each review -->
         <li>
             <h2>{{ review.course.course_name }}</h2>
             <p>Author: {{ review.author.username }}</p>
             <p>Rating: {{ review.rating }}/5</p>
             <p>Difficulty: {{ review.difficulty }}/5</p>
             <p>Review: {{ review.review_text }}</p>
+            <!-- Recommend is a checkbox that takes check as a yes and no check as a no. -->
+            <!-- Source: Django documentation on yesno -->
             <p>Recommend: {{ review.recommend_to_take|yesno:"Yes,No" }}</p>
         </li>
-        
     {% endfor %}
 </ul>
 </div><br>
 
-<!-- Add Class Review Form -->
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<h2>Submit a Class Review</h2>
-<form method="post" action="{% url 'classreview_list' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
-
-{% endblock %}
+    <!-- Form submission for posting a new class review -->
+    <h2>Submit a Class Review</h2>
+    <form method="post" action="{% url 'classreview_list' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% endblock %}
 </div><br>

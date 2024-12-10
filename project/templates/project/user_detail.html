@@ -4,31 +4,29 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{{ user.username }}</title>
-</head>
+<!-- User detail page -->
 <body>
     <h1>{{ user.username }} 🐾</h1>
-    <!-- User Details  -->
+    <!-- User's details -->
     <div class="container">
         <p>Email: {{ user.email }}</p>
         <p>Major: {{ user.major }}</p>
         <p>Year of Graduation: {{ user.year_of_graduation }}</p>
     </div><br>
 
-    <!-- User Academic Track  -->
+    <!-- Link to user's academic track  -->
     <div class="container">
-    {% if user.academictrack_set.first %}
-    <a href="{% url 'academictrack_detail' pk=user.academictrack_set.first.id %}">
-        View Academic Track for {{ user.username }}
-    </a><br>
-    {% else %}
-        <p>{{ user.username }} does not have an Academic Track.</p>
-    {% endif %}
-
-    <a href="{% url 'user_list' %}">Back to User List</a>
+        {% if user.academictrack_set.first %}
+        <a href="{% url 'academictrack_detail' pk=user.academictrack_set.first.id %}">
+            View Academic Track for {{ user.username }}
+        </a><br>
+        <!-- If no academic track, show the following -->
+        {% else %}
+            <p>{{ user.username }} does not have an Academic Track.</p>
+        {% endif %}
+        <!-- Link to user list page -->
+        <a href="{% url 'user_list' %}">Back to User List</a>
     </div>
-
 </body>
 </html>
 {% endblock %}

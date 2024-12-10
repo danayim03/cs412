@@ -3,23 +3,27 @@
 {% block title %}Courses{% endblock %}
 
 {% block content %}
+<!-- Title of the courses page -->
 <h1>Courses 🐾</h1>
 
-<!-- Search Bar for usernames -->
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<form action="{% url 'course_list' %}" method="GET">
-    <input type="search" name="class_search" placeholder="Search a course." aria-label="Search">
-    <button type="submit">Search</button>
-</form>
+    <!-- Search bar for usernames -->
+    <form action="{% url 'course_list' %}" method="GET">
+        <input type="search" name="class_search" placeholder="Search a course." aria-label="Search">
+        <button type="submit">Search</button>
+    </form>
 </div><br>
 
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<ul>
-    {% for course in courses %}
-        <li>
-            <a href="{% url 'course_detail' pk=course.id %}">{{ course.course_name }}</a> - {{ course.department }}
-        </li>
-    {% endfor %}
-</ul>
-{% endblock %}
+    <!-- Rendering each course as a list item unordered -->
+    <ul>
+        {% for course in courses %}
+            <li>
+                <a href="{% url 'course_detail' pk=course.id %}">{{ course.course_name }}</a> - {{ course.department }}
+            </li>
+        {% endfor %}
+    </ul>
+    {% endblock %}
 </div><br>

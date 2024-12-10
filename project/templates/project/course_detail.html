@@ -7,16 +7,18 @@
     <title>{{ course.course_name }}</title>
 </head>
 
+<!-- Details of each course -->
 <body>
     <h1>{{ course.course_name }}</h1>
+    <!-- Categories of each course -->
     <div class="container">
         <p>Course Code: {{ course.course_code }}</p>
         <p>Department: {{ course.department }}</p>
         <p>Description: {{ course.description }}</p>
         <p>Credits: {{ course.credits }}</p>
+        <!-- Page redirection to list view of all the cs courses -->
         <a href="{% url 'course_list' %}">Back to Courses</a>
     </div><br>
-
 </body>
 
 </html>

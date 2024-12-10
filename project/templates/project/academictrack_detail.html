@@ -3,43 +3,48 @@
 {% block content %}
 <h1>{{ academic_track.user.username }}'s Academic Tracks 🐾</h1>
 
-<!-- List all academic tracks -->
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<h2>All Tracks:</h2>
-<ul>
-    {% for track in user_tracks %}
-        <li>
-            <a href="{% url 'academictrack_detail' track.pk %}">
-                {{ track.year }} Track
-            </a>
-        </li>
-    {% empty %}
-        <li>No tracks available.</li>
-    {% endfor %}
-</ul>
-</div><br>
-
-<!-- Details for the selected track -->
-<div class="container">
-<h2>{{ academic_track.year }} Track Details</h2>
-<h3>Classes Taken:</h3>
-<ul>
-    {% for year, classes in grouped_classes.items %}
-        {% if classes %}
+    <!-- A selected user's academic tracks list (ex. freshman, sophomore, etc) -->
+    <h2>All Tracks:</h2>
+    <ul>
+        {% for track in user_tracks %}
             <li>
-                <h3>{{ year }}</h3>
-                <ul>
-                    {% for course in classes %}
-                        <li>{{ course.course.course_name }} - {{ course.semester }} {{ course.year_taken }}</li>
-                    {% endfor %}
-                </ul>
+                <a href="{% url 'academictrack_detail' track.pk %}">
+                    {{ track.year }} Track
+                </a>
             </li>
-        {% endif %}
-    {% endfor %}
-</ul>
+        {% empty %}
+            <!-- If a selected user did not submit any tracks, show the following -->
+            <li>No tracks available.</li>
+        {% endfor %}
+    </ul>
 </div><br>
 
+<!-- "container" = css styling for each sections -->
 <div class="container">
-<a href="{% url 'academictrack_list' %}" class="btn btn-link">Back to Academic Track List</a>
-{% endblock %}
+    <!-- A selected user's details for the selected track -->
+    <h2>{{ academic_track.year }} Track Details</h2>
+    <h3>Classes Taken:</h3>
+    <ul>
+        {% for year, classes in grouped_classes.items %}
+            {% if classes %}
+                <li>
+                    <h3>{{ year }}</h3>
+                    <ul>
+                        {% for course in classes %}
+                            <li>{{ course.course.course_name }} - {{ course.semester }} {{ course.year_taken }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div><br>
+
+<!-- "container" = css styling for each sections -->
+<div class="container">
+    <!-- Button that directs user back to the academic track list view -->
+    <a href="{% url 'academictrack_list' %}" class="btn btn-link">Back to Academic Track List</a>
+    {% endblock %}
 </div><br>

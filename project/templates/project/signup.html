@@ -1,15 +1,17 @@
 {% extends "project/base.html" %}
 
 {% block content %}
+<!-- Sign up page -->
 <h2>Sign Up</h2>
 
+<!-- Form submit to sign up -->
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Sign Up</button>
 </form>
 
-<!-- Display form errors -->
+<!-- Display form errors, letting user know specific requirements for sign up -->
 {% if form.errors %}
     <ul>
     {% for field, errors in form.errors.items %}
@@ -18,5 +20,7 @@
     </ul>
 {% endif %}
 
+<!-- A paragraph that explains to user what they should do if they already have an account.
+    Redirection to login page included. -->
 <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
 {% endblock %}
