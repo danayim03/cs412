@@ -1,3 +1,5 @@
+# project/views.py
+
 from django.http.response import HttpResponse as HttpResponse
 from django.views.generic import ListView, DetailView, TemplateView, View, CreateView
 from django.contrib.auth.views import LoginView
